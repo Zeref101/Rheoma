@@ -1,23 +1,16 @@
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { getQueryClient, trpc } from "./trpc/routers/server";
-import Client from "./client";
-import { Suspense } from "react";
+import { Button } from "@/components/ui/button";
+import { requireAuth } from "@/lib/auth-utils";
+import { caller } from "./trpc/routers/server";
+
 // import prisma from "@/lib/db";
 
 export default async function Home() {
-  const queryClient = getQueryClient();
-
-  void queryClient.prefetchQuery(trpc.getUsers.queryOptions());
+  await requireAuth();
+  const data = await caller.getUsers();
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Client />
-        </Suspense>
-      </HydrationBoundary>
-
+      Protected route  {JSON.stringify(data)}
     </div>
   );
 }
