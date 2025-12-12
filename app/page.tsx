@@ -13,6 +13,11 @@ export default function Home() {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const { data } = useQuery(trpc.getWorkflows.queryOptions());
+  const testAi = useMutation(trpc.testAi.mutationOptions({
+    onSuccess: (data) => {
+      console.log(data);
+    }
+  }));
 
   const create = useMutation(trpc.createWorkflow.mutationOptions({
     onSuccess: () => {
@@ -23,7 +28,9 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black flex-col">
-      Protected route  {JSON.stringify(data)}
+      {/* Protected route  {JSON.stringify(data)} */}
+      {/* {testAi.data} */}
+      <Button disabled={testAi.isPending} onClick={() => testAi.mutate()}>test ai</Button>
       <Button disabled={create.isPending} onClick={() => create.mutate()}>
         Create Workflow
       </Button>
