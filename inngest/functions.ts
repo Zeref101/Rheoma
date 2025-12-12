@@ -18,6 +18,11 @@ export const execute = inngest.createFunction(
       {
         system: "You are a helpful assistant",
         prompt: "what is 46*57 ?",
+        experimental_telemetry: {
+          isEnabled: true,
+          recordInputs: true,
+          recordOutputs: true,
+        },
         model: google("gemini-2.5-flash"),
       }
     );
@@ -28,6 +33,11 @@ export const execute = inngest.createFunction(
       {
         system: "You are a helpful assistant",
         prompt: "what is 46*57 ?",
+        experimental_telemetry: {
+          isEnabled: true,
+          recordInputs: true,
+          recordOutputs: true,
+        },
         model: openai("gpt-4"),
       }
     );
@@ -38,6 +48,11 @@ export const execute = inngest.createFunction(
       {
         system: "You are a helpful assistant",
         prompt: "what is 46*57 ?",
+        experimental_telemetry: {
+          isEnabled: true,
+          recordInputs: true,
+          recordOutputs: true,
+        },
         model: anthropic("claude-sonnet-4-5"),
       }
     );
