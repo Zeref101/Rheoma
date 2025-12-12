@@ -1,0 +1,9 @@
+procs:
+  inngest:
+    cmd: ["pnpm", "dlx", "inngest-cli@latest", "dev"]
+    autostart: true
+    autorestart: true
+  next:
+    cmd: ["pnpm", "run", "dev"]
+    autostart: true
+    autorestart: true
