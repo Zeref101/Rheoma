@@ -7,3 +7,5 @@ procs:
     cmd: ["pnpm", "run", "dev"]
     autostart: true
     autorestart: true
+  prismaStudio:
+    cmd: ["npx", "prisma", "studio"]
