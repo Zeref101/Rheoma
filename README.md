@@ -77,8 +77,7 @@ This ensures a smooth local development experience without starting services man
 
 ```bash
 pnpm run dev          # Start only Next.js
-pnpm run inngest:dev  # Start Inngest dev server
-pnpm run studio       # Open Prisma Studio
+pnpm dlx inngest-cli@latest dev  # Start Inngest dev server
 pnpm run build        # Build for production
 ```
 
