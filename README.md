@@ -87,10 +87,10 @@ pnpm run build        # Build for production
 
 The goal of this platform is to:
 
+- To understand how automation workflow platforms work deeply by developing it yourself.
 - Build **event-driven workflows**
 - Execute **long-running background tasks**
 - Maintain **type safety across frontend and backend**
-- Provide a scalable alternative to tools like n8n
 
 ---
 
