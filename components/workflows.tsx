@@ -1,7 +1,7 @@
 "use client";
 import { useCreateWorkflow, useSuspenseWorkflows } from '@/features/workflows/hooks/use-workflows'
 import React from 'react'
-import { EntityContainer, EntityHeader, EntitySearch } from './entity-components';
+import { EntityContainer, EntityHeader, EntityPagination, EntitySearch } from './entity-components';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
@@ -65,13 +65,26 @@ export const WorkflowsHeader = ({ disabled }: { disabled?: boolean }) => {
         </>
     )
 }
+export const WorkflowsPagination = () => {
+    const workflows = useSuspenseWorkflows();
+    const [params, setParams] = useWorkflowsParams();
+
+    return (
+        <EntityPagination
+            disabled={workflows.isFetching}
+            totalPages={workflows.data.totalPages}
+            page={workflows.data.page}
+            onPageChange={(page) => setParams({ ...params, page })}
+        />
+    )
+}
 
 export const WorkflowsContainer = ({ children }: { children: React.ReactNode }) => {
     return (
         <EntityContainer
             header={<WorkflowsHeader />}
             search={<WorkflowsSearch />}
-            pagination={<></>}>
+            pagination={<WorkflowsPagination />}>
             {children}
         </EntityContainer>
     )
