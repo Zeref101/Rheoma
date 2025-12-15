@@ -1,21 +1,39 @@
 "use client";
 import { useCreateWorkflow, useSuspenseWorkflows } from '@/features/workflows/hooks/use-workflows'
 import React from 'react'
-import { boolean } from 'zod';
-import { EntityContainer, EntityHeader } from './entity-components';
+import { EntityContainer, EntityHeader, EntitySearch } from './entity-components';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTRPC } from '@/app/trpc/routers/client';
+import { WorkflowsListProps } from '@/types/constants';
+import { useWorkflowsParams } from '@/features/workflows/hooks/use-workflows-params';
+import { useEntitySearch } from '@/hooks/use-entity-search';
 
-export const WorkflowsList = () => {
-    const workflows = useSuspenseWorkflows();
+export const WorkflowsSearch = () => {
+    const [params, setParams] = useWorkflowsParams();
+    const { searchValue, onSearchChange } = useEntitySearch({
+        params,
+        setParams
+    });
     return (
-        <div className='flex-1 flex justify-center items-center'>
-            {JSON.stringify(workflows.data, null, 2)};
-        </div>
+        <EntitySearch
+            value={searchValue}
+            onChange={onSearchChange}
+            placeholder='Search Workflows'
+        />
     )
 }
+
+export const WorkflowsList = ({ initialParams }: WorkflowsListProps) => {
+    const workflows = useSuspenseWorkflows(initialParams);
+
+    return (
+        <div className="flex-1 flex justify-center items-center">
+            {JSON.stringify(workflows.data, null, 2)}
+        </div>
+    );
+};
 
 export const WorkflowsHeader = ({ disabled }: { disabled?: boolean }) => {
     const createWorkflow = useCreateWorkflow();
@@ -28,11 +46,10 @@ export const WorkflowsHeader = ({ disabled }: { disabled?: boolean }) => {
             onSuccess: (data) => {
                 toast.success(`Workflow "${data.name}" created`);
                 router.push(`/workflows/${data.id}`);
-                queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions());
+                queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions({}));
             },
-            onError: (error) => {
-                console.log(error);
-            }
+            onError: (error) => console.log(error)
+
         })
     }
     return (
@@ -53,7 +70,7 @@ export const WorkflowsContainer = ({ children }: { children: React.ReactNode }) 
     return (
         <EntityContainer
             header={<WorkflowsHeader />}
-            search={<></>}
+            search={<WorkflowsSearch />}
             pagination={<></>}>
             {children}
         </EntityContainer>
