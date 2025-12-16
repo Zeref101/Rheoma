@@ -6,7 +6,6 @@ import { requireAuth } from "@/lib/auth-utils";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
-
 interface Props {
   params: Promise<{ workflowId: string }>;
 }
