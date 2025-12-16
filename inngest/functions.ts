@@ -12,50 +12,38 @@ export const execute = inngest.createFunction(
   { id: "execute-ai" },
   { event: "execute/ai" },
   async ({ event, step }) => {
-    const { steps: geminiSteps } = await step.ai.wrap(
-      "gemini-generate-text",
-      generateText,
-      {
-        system: "You are a helpful assistant",
-        prompt: "what is 46*57 ?",
-        experimental_telemetry: {
-          isEnabled: true,
-          recordInputs: true,
-          recordOutputs: true,
-        },
-        model: google("gemini-2.5-flash"),
-      }
-    );
+    const { steps: geminiSteps } = await step.ai.wrap("gemini-generate-text", generateText, {
+      system: "You are a helpful assistant",
+      prompt: "what is 46*57 ?",
+      experimental_telemetry: {
+        isEnabled: true,
+        recordInputs: true,
+        recordOutputs: true,
+      },
+      model: google("gemini-2.5-flash"),
+    });
 
-    const { steps: openaiSteps } = await step.ai.wrap(
-      "gemini-generate-text",
-      generateText,
-      {
-        system: "You are a helpful assistant",
-        prompt: "what is 46*57 ?",
-        experimental_telemetry: {
-          isEnabled: true,
-          recordInputs: true,
-          recordOutputs: true,
-        },
-        model: openai("gpt-4"),
-      }
-    );
+    const { steps: openaiSteps } = await step.ai.wrap("gemini-generate-text", generateText, {
+      system: "You are a helpful assistant",
+      prompt: "what is 46*57 ?",
+      experimental_telemetry: {
+        isEnabled: true,
+        recordInputs: true,
+        recordOutputs: true,
+      },
+      model: openai("gpt-4"),
+    });
 
-    const { steps: anthropicSteps } = await step.ai.wrap(
-      "gemini-generate-text",
-      generateText,
-      {
-        system: "You are a helpful assistant",
-        prompt: "what is 46*57 ?",
-        experimental_telemetry: {
-          isEnabled: true,
-          recordInputs: true,
-          recordOutputs: true,
-        },
-        model: anthropic("claude-sonnet-4-5"),
-      }
-    );
+    const { steps: anthropicSteps } = await step.ai.wrap("gemini-generate-text", generateText, {
+      system: "You are a helpful assistant",
+      prompt: "what is 46*57 ?",
+      experimental_telemetry: {
+        isEnabled: true,
+        recordInputs: true,
+        recordOutputs: true,
+      },
+      model: anthropic("claude-sonnet-4-5"),
+    });
     return { geminiSteps, openaiSteps, anthropicSteps };
   }
 );

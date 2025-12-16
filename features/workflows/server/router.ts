@@ -13,16 +13,14 @@ export const workflowsRouter = createTRPCRouter({
       },
     });
   }),
-  remove: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .mutation(({ ctx, input }) => {
-      return prisma.workflow.delete({
-        where: {
-          id: input.id,
-          userId: ctx.auth.user.id,
-        },
-      });
-    }),
+  remove: protectedProcedure.input(z.object({ id: z.string() })).mutation(({ ctx, input }) => {
+    return prisma.workflow.delete({
+      where: {
+        id: input.id,
+        userId: ctx.auth.user.id,
+      },
+    });
+  }),
   updateName: protectedProcedure
     .input(z.object({ id: z.string(), name: z.string().min(1) }))
     .mutation(({ input }) => {
@@ -35,13 +33,11 @@ export const workflowsRouter = createTRPCRouter({
         },
       });
     }),
-  getOne: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .query(({ ctx, input }) => {
-      return prisma.workflow.findUnique({
-        where: { id: input.id, userId: ctx.auth.user.id },
-      });
-    }),
+  getOne: protectedProcedure.input(z.object({ id: z.string() })).query(({ ctx, input }) => {
+    return prisma.workflow.findUnique({
+      where: { id: input.id, userId: ctx.auth.user.id },
+    });
+  }),
   getMany: protectedProcedure
     .input(
       z.object({

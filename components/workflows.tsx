@@ -1,160 +1,163 @@
 "use client";
-import { useCreateWorkflow, useRemoveWorkflow, useSuspenseWorkflows } from '@/features/workflows/hooks/use-workflows'
-import React from 'react'
-import { EmptyView, EntityContainer, EntityHeader, EntityItem, EntityList, EntityPagination, EntitySearch, ErrorView, LoadingView } from './entity-components';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
-import { useQueryClient } from '@tanstack/react-query';
-import { useTRPC } from '@/app/trpc/routers/client';
-import { WorkflowsListProps } from '@/types/constants';
-import { useWorkflowsParams } from '@/features/workflows/hooks/use-workflows-params';
-import { useEntitySearch } from '@/hooks/use-entity-search';
-import type { Workflow } from '@/app/generated/prisma/client';
-import { WorkflowIcon } from 'lucide-react';
+import {
+  useCreateWorkflow,
+  useRemoveWorkflow,
+  useSuspenseWorkflows,
+} from "@/features/workflows/hooks/use-workflows";
+import React from "react";
+import {
+  EmptyView,
+  EntityContainer,
+  EntityHeader,
+  EntityItem,
+  EntityList,
+  EntityPagination,
+  EntitySearch,
+  ErrorView,
+  LoadingView,
+} from "./entity-components";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { useTRPC } from "@/app/trpc/routers/client";
+import { WorkflowsListProps } from "@/types/constants";
+import { useWorkflowsParams } from "@/features/workflows/hooks/use-workflows-params";
+import { useEntitySearch } from "@/hooks/use-entity-search";
+import type { Workflow } from "@/app/generated/prisma/client";
+import { WorkflowIcon } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 export const WorkflowsSearch = () => {
-    const [params, setParams] = useWorkflowsParams();
-    const { searchValue, onSearchChange } = useEntitySearch({
-        params,
-        setParams
-    });
-    return (
-        <EntitySearch
-            value={searchValue}
-            onChange={onSearchChange}
-            placeholder='Search Workflows'
-        />
-    )
-}
+  const [params, setParams] = useWorkflowsParams();
+  const { searchValue, onSearchChange } = useEntitySearch({
+    params,
+    setParams,
+  });
+  return (
+    <EntitySearch value={searchValue} onChange={onSearchChange} placeholder="Search Workflows" />
+  );
+};
 
 export const WorkflowsList = ({ initialParams }: WorkflowsListProps) => {
-    const workflows = useSuspenseWorkflows(initialParams);
+  const workflows = useSuspenseWorkflows(initialParams);
 
-    return (
-        <EntityList
-            items={workflows.data.items}
-            getKey={(workflow) => workflow.id}
-            renderItem={(workflow) => <WorkflowItem data={workflow} />}
-            emptyView={<WorkflowsEmpty />}
-        />
-    );
+  return (
+    <EntityList
+      items={workflows.data.items}
+      getKey={(workflow) => workflow.id}
+      renderItem={(workflow) => <WorkflowItem data={workflow} />}
+      emptyView={<WorkflowsEmpty />}
+    />
+  );
 };
 
 export const WorkflowsHeader = ({ disabled }: { disabled?: boolean }) => {
-    const createWorkflow = useCreateWorkflow();
-    const router = useRouter();
-    const queryClient = useQueryClient();
-    const trpc = useTRPC();
+  const createWorkflow = useCreateWorkflow();
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const trpc = useTRPC();
 
-    const handleCreate = () => {
-        createWorkflow.mutate(undefined, {
-            onSuccess: (data) => {
-                toast.success(`Workflow "${data.name}" created`);
-                router.push(`/workflows/${data.id}`);
-                queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions({}));
-            },
-            onError: (error) => console.log(error)
-
-        })
-    }
-    return (
-        <>
-            <EntityHeader
-                title='Workflows'
-                description='Create and manage your workflows'
-                onNew={handleCreate}
-                newButtonLabel='New Workflow'
-                disabled={disabled}
-                isCreating={createWorkflow.isPending}
-            />
-        </>
-    )
-}
+  const handleCreate = () => {
+    createWorkflow.mutate(undefined, {
+      onSuccess: (data) => {
+        toast.success(`Workflow "${data.name}" created`);
+        router.push(`/workflows/${data.id}`);
+        queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions({}));
+      },
+      onError: (error) => console.log(error),
+    });
+  };
+  return (
+    <>
+      <EntityHeader
+        title="Workflows"
+        description="Create and manage your workflows"
+        onNew={handleCreate}
+        newButtonLabel="New Workflow"
+        disabled={disabled}
+        isCreating={createWorkflow.isPending}
+      />
+    </>
+  );
+};
 export const WorkflowsPagination = () => {
-    const workflows = useSuspenseWorkflows();
-    const [params, setParams] = useWorkflowsParams();
+  const workflows = useSuspenseWorkflows();
+  const [params, setParams] = useWorkflowsParams();
 
-    return (
-        <EntityPagination
-            disabled={workflows.isFetching}
-            totalPages={workflows.data.totalPages}
-            page={workflows.data.page}
-            onPageChange={(page) => setParams({ ...params, page })}
-        />
-    )
-}
+  return (
+    <EntityPagination
+      disabled={workflows.isFetching}
+      totalPages={workflows.data.totalPages}
+      page={workflows.data.page}
+      onPageChange={(page) => setParams({ ...params, page })}
+    />
+  );
+};
 
 export const WorkflowsContainer = ({ children }: { children: React.ReactNode }) => {
-    return (
-        <EntityContainer
-            header={<WorkflowsHeader />}
-            search={<WorkflowsSearch />}
-            pagination={<WorkflowsPagination />}>
-            {children}
-        </EntityContainer>
-    )
-}
+  return (
+    <EntityContainer
+      header={<WorkflowsHeader />}
+      search={<WorkflowsSearch />}
+      pagination={<WorkflowsPagination />}
+    >
+      {children}
+    </EntityContainer>
+  );
+};
 
 export const WorkflowsLoading = () => {
-    return (
-        <LoadingView message=' workflows' />
-    );
-}
+  return <LoadingView message=" workflows" />;
+};
 
 export const WorkflowsError = () => {
-    return (
-        <ErrorView message='Error loading workflows' />
-    );
-}
+  return <ErrorView message="Error loading workflows" />;
+};
 
 export const WorkflowsEmpty = () => {
-    const create = useCreateWorkflow();
+  const create = useCreateWorkflow();
 
-    const handleCreate = () => {
-        create.mutate(undefined, {
-            onError: (error) => {
-                toast.error("Error: " + error);
-            }
-        })
-    }
+  const handleCreate = () => {
+    create.mutate(undefined, {
+      onError: (error) => {
+        toast.error("Error: " + error);
+      },
+    });
+  };
 
-    return (
+  return (
+    <>
+      <EmptyView
+        message="No workflows found, Get started by creating your first workflow"
+        onNew={handleCreate}
+      />
+    </>
+  );
+};
+
+export const WorkflowItem = ({ data }: { data: Workflow }) => {
+  const removeWorkflow = useRemoveWorkflow();
+
+  const handleRemove = () => {
+    removeWorkflow.mutate({ id: data.id });
+  };
+  return (
+    <EntityItem
+      href={`/workflows/${data.id}`}
+      title={data.name}
+      subtitle={
         <>
-            <EmptyView
-                message="No workflows found, Get started by creating your first workflow"
-                onNew={handleCreate}
-            />
+          Updated {formatDistanceToNow(data.updatedAt, { addSuffix: true })} &bull; Created{" "}
+          {formatDistanceToNow(data.createdAt, { addSuffix: true })}
         </>
-    );
-}
-
-export const WorkflowItem = ({
-    data
-}: { data: Workflow }) => {
-    const removeWorkflow = useRemoveWorkflow();
-
-    const handleRemove = () => {
-        removeWorkflow.mutate({ id: data.id })
-    }
-    return (
-        <EntityItem
-            href={`/workflows/${data.id}`}
-            title={data.name}
-            subtitle={
-                <>
-                    Updated {formatDistanceToNow(data.updatedAt, { addSuffix: true })}{" "}
-                    &bull; Created{" "}
-                    {formatDistanceToNow(data.createdAt, { addSuffix: true })}
-                </>
-            }
-            image={
-                <div className='size-8 flex items-center justify-center'>
-                    <WorkflowIcon className='size-5 text-muted-foreground' />
-                </div>
-            }
-            onRemove={handleRemove}
-            isRemoving={removeWorkflow.isPending}
-        />
-    )
-}
+      }
+      image={
+        <div className="flex size-8 items-center justify-center">
+          <WorkflowIcon className="text-muted-foreground size-5" />
+        </div>
+      }
+      onRemove={handleRemove}
+      isRemoving={removeWorkflow.isPending}
+    />
+  );
+};
