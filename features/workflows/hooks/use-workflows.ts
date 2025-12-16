@@ -3,6 +3,7 @@ import { useTRPC } from "@/app/trpc/routers/client";
 import { WorkflowsParams } from "@/types/constants";
 import { useWorkflowsParams } from "./use-workflows-params";
 import { toast } from "sonner";
+import { error } from "console";
 
 //* Hook to fetch all workflow using suspense
 export const useSuspenseWorkflows = (initialParams?: WorkflowsParams) => {
@@ -31,6 +32,30 @@ export const useRemoveWorkflow = () => {
       onSuccess: (data) => {
         toast.success(`Workflow ${data.name} removed`);
         QueryClient.invalidateQueries(trpc.workflows.getMany.queryOptions({}));
+      },
+    })
+  );
+};
+
+//* Hook to fetch single workflow using suspense
+export const useSuspenseWorkflow = (id: string) => {
+  const trpc = useTRPC();
+  return useSuspenseQuery(trpc.workflows.getOne.queryOptions({ id }));
+};
+// * Hook to update a workflow name
+export const useUpdateWorkflowName = () => {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    trpc.workflows.updateName.mutationOptions({
+      onSuccess: (data) => {
+        toast.success(`Workflow ${data.name} updated`);
+        queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions({}));
+        queryClient.invalidateQueries(trpc.workflows.getOne.queryOptions({ id: data.id }));
+      },
+      onError: (error) => {
+        toast.error(`Failed to update workflow: ${error}`);
       },
     })
   );
