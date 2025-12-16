@@ -289,7 +289,14 @@ export const EntityItem = ({
                                 <Button
                                     size={"icon"}
                                     variant={"ghost"}
-                                    onClick={(e) => e.stopPropagation()}
+                                    onClick={(e) => { e.stopPropagation() }}
+                                    className="
+                                            text-muted-foreground
+                                            hover:text-foreground
+                                            hover:bg-muted
+                                            data-[state=open]:bg-muted
+                                            data-[state=open]:text-foreground
+                                        "
                                 >
                                     <MoreVerticalIcon className="size-4" />
                                 </Button>
@@ -298,7 +305,15 @@ export const EntityItem = ({
                                 align="end"
                                 onClick={(e) => e.stopPropagation()}
                             >
-                                <DropdownMenuItem onClick={handleRemove}>
+                                <DropdownMenuItem
+                                    onClick={handleRemove}
+                                    className="
+                                        cursor-pointer
+                                        text-destructive
+                                        focus:bg-destructive/10
+                                        focus:text-destructive
+                                    "
+                                >
                                     <TrashIcon className="size-4" />
                                     Delete
                                 </DropdownMenuItem>
