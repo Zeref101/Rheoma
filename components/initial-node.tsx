@@ -7,15 +7,15 @@ import { PlaceholderNode } from "./react-flow/placeholder-node";
 import { WorkflowNode } from "./workflow-node";
 
 export const InitialNode = memo((props: NodeProps) => {
-    return (
-        <WorkflowNode>
-            <PlaceholderNode {...props} onClick={() => { }}>
-                <div className="flex cursor-pointer items-center justify-center">
-                    <PlusIcon className="size-4" />
-                </div>
-            </PlaceholderNode>
-        </WorkflowNode>
-    );
+  return (
+    <WorkflowNode>
+      <PlaceholderNode {...props} onClick={() => {}}>
+        <div className="flex cursor-pointer items-center justify-center">
+          <PlusIcon className="size-4" />
+        </div>
+      </PlaceholderNode>
+    </WorkflowNode>
+  );
 });
 
 InitialNode.displayName = "InitialNode";

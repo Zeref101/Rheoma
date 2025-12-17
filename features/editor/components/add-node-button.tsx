@@ -5,16 +5,11 @@ import { memo } from "react";
 import { Button } from "@/components/ui/button";
 
 export const AddNodeButton = memo(() => {
-    return (
-        <Button
-            onClick={() => { }}
-            size={"icon"}
-            variant={"outline"}
-            className="bg-background"
-        >
-            <PlusIcon color="white" />
-        </Button>
-    )
-})
+  return (
+    <Button onClick={() => {}} size={"icon"} variant={"outline"} className="bg-background">
+      <PlusIcon color="white" />
+    </Button>
+  );
+});
 
 AddNodeButton.displayName = "AddNodeButton";
