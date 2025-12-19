@@ -11,7 +11,7 @@ export const InitialNode = memo((props: NodeProps) => {
   const [selectOpen, setSelectOpen] = useState(false);
   return (
     <NodeSelector open={selectOpen} onOpenChange={setSelectOpen}>
-      <WorkflowNode>
+      <WorkflowNode showToolbar={false}>
         <PlaceholderNode {...props} onClick={() => setSelectOpen(true)}>
           <div className="flex cursor-pointer items-center justify-center">
             <PlusIcon className="size-4" />
