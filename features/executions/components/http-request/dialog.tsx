@@ -1,30 +1,30 @@
 "use client";
 
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import {
-    Form,
-    FormField,
-    FormDescription,
-    FormItem,
-    FormLabel,
-    FormControl,
-    FormMessage,
+  Form,
+  FormField,
+  FormDescription,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import z from "zod";
@@ -34,145 +34,144 @@ import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 
 interface Props {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    onSubmit: (values: z.infer<typeof formSchema>) => void;
-    defaultEndpoint?: string;
-    defaultMethod?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-    defaultBody?: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSubmit: (values: z.infer<typeof formSchema>) => void;
+  defaultEndpoint?: string;
+  defaultMethod?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  defaultBody?: string;
 }
 
 const formSchema = z.object({
-    endpoint: z.url({ message: "Please enter a valid URL" }),
-    method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
-    body: z.string().optional(),
+  endpoint: z.url({ message: "Please enter a valid URL" }),
+  method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
+  body: z.string().optional(),
 });
 
 export const HttpRequestDialog = ({
-    open,
-    onOpenChange,
-    onSubmit,
-    defaultBody,
-    defaultEndpoint,
-    defaultMethod,
+  open,
+  onOpenChange,
+  onSubmit,
+  defaultBody,
+  defaultEndpoint,
+  defaultMethod,
 }: Props) => {
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            endpoint: defaultEndpoint,
-            method: defaultMethod,
-            body: defaultBody,
-        },
-    });
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      endpoint: defaultEndpoint,
+      method: defaultMethod,
+      body: defaultBody,
+    },
+  });
 
-    const watchMethod = useWatch({
-        control: form.control,
-        name: "method",
-    });
-    const showBodyField = ["POST", "PUT", "PATCH"].includes(watchMethod);
+  const watchMethod = useWatch({
+    control: form.control,
+    name: "method",
+  });
+  const showBodyField = ["POST", "PUT", "PATCH"].includes(watchMethod);
 
-    const handleSubmit = (values: z.infer<typeof formSchema>) => {
-        onSubmit(values);
-        onOpenChange(false);
-    };
+  const handleSubmit = (values: z.infer<typeof formSchema>) => {
+    onSubmit(values);
+    onOpenChange(false);
+  };
 
-    useEffect(() => {
-        if (open) {
-            form.reset({
-                endpoint: defaultEndpoint,
-                method: defaultMethod,
-                body: defaultBody
-            })
-        }
-    }, [open, defaultEndpoint, form, defaultMethod, defaultBody])
-    return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>HTTP Request</DialogTitle>
-                    <DialogDescription>Configure settings for the HTTP Request node.</DialogDescription>
-                </DialogHeader>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(handleSubmit)} className="mt-4 space-y-8">
-                        <FormField
-                            control={form.control}
-                            name="method"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Method</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger className="w-full">
-                                                <SelectValue placeholder="Select a method" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="GET">GET</SelectItem>
-                                            <SelectItem value="POST">POST</SelectItem>
-                                            <SelectItem value="PUT">PUT</SelectItem>
-                                            <SelectItem value="PATCH">PATCH</SelectItem>
-                                            <SelectItem value="DELETE">DELETE</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <FormDescription>
-                                        Choose the HTTP method that will be used when sending the request.
-                                    </FormDescription>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="endpoint"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Endpoint URL</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="`https://fake-json-api.mock.beeceptor.com/users{{httpResponse.data.id}}`"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormDescription>
-                                        Static URL or use {"{{variabless}}"} for simple values or {"{{json variable}}"}{" "}
-                                        to stringify objects
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        {showBodyField && (
-                            <FormField
-                                control={form.control}
-                                name="body"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Request Body</FormLabel>
-                                        <FormControl>
-                                            <Textarea
-                                                placeholder={
-                                                    '{\n  "userId": "{{httpResponse.data.id}}",\n  "name": "{{httpResponse.data.name}}",\n  "email": "{{httpResponse.data.email}}"\n}'
-                                                }
-                                                className="min-h-[120px] font-mono text-sm"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormDescription>
-                                            JSON payload with static values and dynamic variables from previous steps.
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        )}
-                        <DialogFooter className="mt-4">
-                            <Button type="submit" className="w-full">
-                                Save
-                            </Button>
-                        </DialogFooter>
-
-                    </form>
-                </Form>
-            </DialogContent>
-        </Dialog>
-    );
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        endpoint: defaultEndpoint,
+        method: defaultMethod,
+        body: defaultBody,
+      });
+    }
+  }, [open, defaultEndpoint, form, defaultMethod, defaultBody]);
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>HTTP Request</DialogTitle>
+          <DialogDescription>Configure settings for the HTTP Request node.</DialogDescription>
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="mt-4 space-y-8">
+            <FormField
+              control={form.control}
+              name="method"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Method</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a method" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="GET">GET</SelectItem>
+                      <SelectItem value="POST">POST</SelectItem>
+                      <SelectItem value="PUT">PUT</SelectItem>
+                      <SelectItem value="PATCH">PATCH</SelectItem>
+                      <SelectItem value="DELETE">DELETE</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    Choose the HTTP method that will be used when sending the request.
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="endpoint"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Endpoint URL</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="`https://fake-json-api.mock.beeceptor.com/users{{httpResponse.data.id}}`"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Static URL or use {"{{variabless}}"} for simple values or {"{{json variable}}"}{" "}
+                    to stringify objects
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {showBodyField && (
+              <FormField
+                control={form.control}
+                name="body"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Request Body</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder={
+                          '{\n  "userId": "{{httpResponse.data.id}}",\n  "name": "{{httpResponse.data.name}}",\n  "email": "{{httpResponse.data.email}}"\n}'
+                        }
+                        className="min-h-[120px] font-mono text-sm"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      JSON payload with static values and dynamic variables from previous steps.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            <DialogFooter className="mt-4">
+              <Button type="submit" className="w-full">
+                Save
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
 };

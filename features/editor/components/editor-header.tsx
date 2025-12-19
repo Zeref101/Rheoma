@@ -32,9 +32,9 @@ export const EditorSaveButton = ({ workflowId }: { workflowId: string }) => {
     saveWorkflow.mutate({
       id: workflowId,
       nodes,
-      edges
+      edges,
     });
-  }
+  };
   return (
     <div className="ml-auto">
       <Button size="sm" onClick={handleSave} disabled={saveWorkflow.isPending}>

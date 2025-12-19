@@ -24,8 +24,7 @@ export function WorkflowNode({
 }: WorkflowNodeProps) {
   // const [hovered, setHovered] = useState(false);
   return (
-    <div
-    >
+    <div>
       {showToolbar && (
         <NodeToolbar>
           <Button size="sm" variant="ghost" onClick={onSettings}>
@@ -40,17 +39,9 @@ export function WorkflowNode({
       {children}
 
       {name && (
-        <NodeToolbar
-          position={Position.Bottom}
-          isVisible
-          className="max-w-[200px] text-center"
-        >
+        <NodeToolbar position={Position.Bottom} isVisible className="max-w-[200px] text-center">
           <p className="font-medium">{name}</p>
-          {description && (
-            <p className="text-muted-foreground truncate text-sm">
-              {description}
-            </p>
-          )}
+          {description && <p className="text-muted-foreground truncate text-sm">{description}</p>}
         </NodeToolbar>
       )}
     </div>

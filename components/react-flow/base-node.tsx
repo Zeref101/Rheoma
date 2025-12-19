@@ -13,7 +13,7 @@ export function BaseNode({ className, status, ...props }: BaseNodeProps) {
     <div
       className={cn(
         "bg-card text-card-foreground relative rounded-sm border",
-        "hover:ring-1 border",
+        "border hover:ring-1",
         // React Flow displays node elements inside of a `NodeWrapper` component,
         // which compiles down to a div with the class `react-flow__node`.
         // When a node is selected, the class `selected` is added to the
@@ -28,13 +28,13 @@ export function BaseNode({ className, status, ...props }: BaseNodeProps) {
     >
       {props.children}
       {status === "error" && (
-        <XCircleIcon className="absolute right-0.5 bottom-0.5 size-2 text-red-500 stroke-3" />
+        <XCircleIcon className="absolute right-0.5 bottom-0.5 size-2 stroke-3 text-red-500" />
       )}
       {status === "success" && (
-        <CheckCircle2Icon className="absolute right-0.5 bottom-0.5 size-2 text-green-500 stroke-3" />
+        <CheckCircle2Icon className="absolute right-0.5 bottom-0.5 size-2 stroke-3 text-green-500" />
       )}
       {status === "loading" && (
-        <Loader2Icon className="absolute -right-0.5 -bottom-0.5 size-2 text-blue-500 stroke-3 animate-spin" />
+        <Loader2Icon className="absolute -right-0.5 -bottom-0.5 size-2 animate-spin stroke-3 text-blue-500" />
       )}
     </div>
   );

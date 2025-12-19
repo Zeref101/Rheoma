@@ -5,23 +5,23 @@ import { memo, useState } from "react";
 import { ManualTriggerDialog } from "./dialog";
 
 export const ManualTriggerNode = memo((props: NodeProps) => {
-    const nodeStatus = "loading";
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const handleOnSetting = () => setDialogOpen(!dialogOpen);
+  const nodeStatus = "loading";
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const handleOnSetting = () => setDialogOpen(!dialogOpen);
 
-    return (
-        <>
-            <ManualTriggerDialog open={dialogOpen} onOpenChange={setDialogOpen} />
-            <BaseTriggerNode
-                {...props}
-                Icon={MousePointerIcon}
-                name="When clicking 'Execute workflow'"
-                status={nodeStatus}
-                onSetting={handleOnSetting}
-                onDoubleClick={handleOnSetting}
-            />
-        </>
-    )
-})
+  return (
+    <>
+      <ManualTriggerDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+      <BaseTriggerNode
+        {...props}
+        Icon={MousePointerIcon}
+        name="When clicking 'Execute workflow'"
+        status={nodeStatus}
+        onSetting={handleOnSetting}
+        onDoubleClick={handleOnSetting}
+      />
+    </>
+  );
+});
 
 ManualTriggerNode.displayName = "ManualTriggerNode";
