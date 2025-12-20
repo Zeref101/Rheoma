@@ -1,6 +1,7 @@
 import type { NodeExecutor } from "@/types/constants";
 import { NonRetriableError } from "inngest";
 import ky, { Options as KyOptions } from "ky";
+import Handlebars from "handlebars";
 
 type HttpRequestData = {
   variableName?: string;
@@ -8,7 +9,11 @@ type HttpRequestData = {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: string;
 };
-
+Handlebars.registerHelper("json", (context) => {
+  const stringified = JSON.stringify(context, null, 2);
+  const safeString = new Handlebars.SafeString(stringified);
+  return safeString;
+});
 export const httpRequestExecution: NodeExecutor<HttpRequestData> = async ({
   data,
   // nodeId,
@@ -16,7 +21,7 @@ export const httpRequestExecution: NodeExecutor<HttpRequestData> = async ({
   step,
 }) => {
   const result = step.run("http-request", async () => {
-    const endpoint = data.endpoint;
+    const endpoint = Handlebars.compile(data.endpoint)(context);
     if (!endpoint) {
       throw new NonRetriableError("Endpoint is required for HTTP request");
     }
@@ -29,7 +34,12 @@ export const httpRequestExecution: NodeExecutor<HttpRequestData> = async ({
 
     if (["POST", "PUT", "PATCH"].includes(method)) {
       if (data.body) {
-        options.body = data.body;
+        const resolved = Handlebars.compile(data.body)(context);
+        JSON.parse(resolved);
+        console.log("Resolved HTTP body:");
+        console.log(resolved);
+
+        options.body = resolved;
         options.headers = {
           "Content-type": "application/json",
         };
