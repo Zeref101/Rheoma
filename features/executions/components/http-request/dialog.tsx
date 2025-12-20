@@ -53,7 +53,6 @@ const formSchema = z.object({
   body: z.string().optional(),
 });
 
-
 export type HttpRequestFormValues = z.infer<typeof formSchema>;
 
 export const HttpRequestDialog = ({ open, onOpenChange, onSubmit, defaultValues }: Props) => {
@@ -71,10 +70,11 @@ export const HttpRequestDialog = ({ open, onOpenChange, onSubmit, defaultValues 
     control: form.control,
     name: "method",
   });
-  const watchVariableName = useWatch({
-    control: form.control,
-    name: "variableName"
-  }) || "myApiCall";
+  const watchVariableName =
+    useWatch({
+      control: form.control,
+      name: "variableName",
+    }) || "myApiCall";
   const showBodyField = ["POST", "PUT", "PATCH"].includes(watchMethod);
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
@@ -91,7 +91,14 @@ export const HttpRequestDialog = ({ open, onOpenChange, onSubmit, defaultValues 
         body: defaultValues?.body,
       });
     }
-  }, [defaultValues?.body, defaultValues?.endpoint, defaultValues?.method, form, open, defaultValues?.variableName]);
+  }, [
+    defaultValues?.body,
+    defaultValues?.endpoint,
+    defaultValues?.method,
+    form,
+    open,
+    defaultValues?.variableName,
+  ]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -109,10 +116,7 @@ export const HttpRequestDialog = ({ open, onOpenChange, onSubmit, defaultValues 
                 <FormItem>
                   <FormLabel>Variable Name</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="myApiCall"
-                      {...field}
-                    />
+                    <Input placeholder="myApiCall" {...field} />
                   </FormControl>
                   <FormDescription>
                     Use this name to reference the result in other nodes:{" "}

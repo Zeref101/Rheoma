@@ -40,7 +40,6 @@ export const HttpRequestNode = memo((props: NodeProps<HttpRequestNodeType>) => {
         return node;
       })
     );
-
   };
   return (
     <>
