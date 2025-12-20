@@ -3,6 +3,7 @@ import { NonRetriableError } from "inngest";
 import ky, { Options as KyOptions } from "ky";
 
 type HttpRequestData = {
+  variableName?: string;
   endpoint?: string;
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: string;
@@ -19,12 +20,19 @@ export const httpRequestExecution: NodeExecutor<HttpRequestData> = async ({
     if (!endpoint) {
       throw new NonRetriableError("Endpoint is required for HTTP request");
     }
+
+    if (!data.variableName) {
+      throw new NonRetriableError("Variable Name not configured");
+    }
     const method = data.method || "GET";
     const options: KyOptions = { method };
 
     if (["POST", "PUT", "PATCH"].includes(method)) {
       if (data.body) {
         options.body = data.body;
+        options.headers = {
+          "Content-type": "application/json",
+        };
       }
     }
     const response = await ky(endpoint, options);
@@ -37,14 +45,15 @@ export const httpRequestExecution: NodeExecutor<HttpRequestData> = async ({
     } else {
       responseData = await response.text();
     }
+    const responsePayload = {
+      status: response.status,
+      statusText: response.statusText,
+      data: responseData,
+    };
 
     return {
       ...context,
-      httpResponse: {
-        status: response.status,
-        statusText: response.statusText,
-        data: responseData,
-      },
+      [data.variableName]: responsePayload,
     };
   });
   return result;

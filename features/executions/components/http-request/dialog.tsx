@@ -41,10 +41,18 @@ interface Props {
 }
 
 const formSchema = z.object({
+  variableName: z
+    .string()
+    .min(1, { message: "variable name is required" })
+    .regex(/^[A-Za-z_$][A-Za-z0-9_$]*$/, {
+      message:
+        "Variable name must start with a letter or underscore and contains only letters, number and underscores",
+    }),
   endpoint: z.url({ message: "Please enter a valid URL" }),
   method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
   body: z.string().optional(),
 });
+
 
 export type HttpRequestFormValues = z.infer<typeof formSchema>;
 
@@ -52,6 +60,7 @@ export const HttpRequestDialog = ({ open, onOpenChange, onSubmit, defaultValues 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      variableName: defaultValues?.variableName || "",
       endpoint: defaultValues?.endpoint,
       method: defaultValues?.method,
       body: defaultValues?.body,
@@ -62,6 +71,10 @@ export const HttpRequestDialog = ({ open, onOpenChange, onSubmit, defaultValues 
     control: form.control,
     name: "method",
   });
+  const watchVariableName = useWatch({
+    control: form.control,
+    name: "variableName"
+  }) || "myApiCall";
   const showBodyField = ["POST", "PUT", "PATCH"].includes(watchMethod);
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
@@ -72,12 +85,13 @@ export const HttpRequestDialog = ({ open, onOpenChange, onSubmit, defaultValues 
   useEffect(() => {
     if (open) {
       form.reset({
+        variableName: defaultValues?.variableName || "",
         endpoint: defaultValues?.endpoint,
         method: defaultValues?.method,
         body: defaultValues?.body,
       });
     }
-  }, [defaultValues?.body, defaultValues?.endpoint, defaultValues?.method, form, open]);
+  }, [defaultValues?.body, defaultValues?.endpoint, defaultValues?.method, form, open, defaultValues?.variableName]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -88,6 +102,26 @@ export const HttpRequestDialog = ({ open, onOpenChange, onSubmit, defaultValues 
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="mt-4 space-y-8">
+            <FormField
+              control={form.control}
+              name="variableName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Variable Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="myApiCall"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Use this name to reference the result in other nodes:{" "}
+                    {`{{${watchVariableName}.httpResponse.data}}`}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="method"

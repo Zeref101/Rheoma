@@ -6,6 +6,7 @@ import { BaseExecutionNode } from "../base-execution-node";
 import { HttpRequestDialog, HttpRequestFormValues } from "./dialog";
 
 type HttpRequestNodeData = {
+  variableName?: string;
   endpoint?: string;
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: string;
@@ -24,6 +25,7 @@ export const HttpRequestNode = memo((props: NodeProps<HttpRequestNodeType>) => {
 
   const handleOnSetting = () => setDialogOpen(!dialogOpen);
   const handleSubmit = (values: HttpRequestFormValues) => {
+    console.log(values);
     setNodes((nodes) =>
       nodes.map((node) => {
         if (node.id === props.id) {
@@ -38,6 +40,7 @@ export const HttpRequestNode = memo((props: NodeProps<HttpRequestNodeType>) => {
         return node;
       })
     );
+
   };
   return (
     <>
