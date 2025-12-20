@@ -5,8 +5,32 @@ import { PAGINATION } from "@/config/constants";
 import prisma from "@/lib/db";
 import { generateSlug } from "random-word-slugs";
 import z from "zod";
+import { inngest } from "@/inngest/client";
 
 export const workflowsRouter = createTRPCRouter({
+  //  * - `execute`: Executes a workflow by its ID.
+  //  *   - **Input:** `{ id: string }`
+  //  *   - **Returns:** The workflow object.
+  //  *   - **Notes:** Triggers an external event for workflow execution.
+  execute: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ input }) => {
+    const workflow = await prisma.workflow.findUniqueOrThrow({
+      where: {
+        id: input.id,
+      },
+    });
+    await inngest.send({
+      name: "workflows/execute.workflow",
+      data: {
+        workflowId: input.id,
+        initalData: {},
+      },
+    });
+    return workflow;
+  }),
+  //  *   - `create`: Creates a new workflow for the authenticated user.
+  //  *   - **Input:** None
+  //  *   - **Returns:** The created workflow object.
+  //  *   - **Notes:** Initializes the workflow with a single initial node.
   create: protectedProcedure.mutation(({ ctx }) => {
     return prisma.workflow.create({
       data: {
@@ -22,6 +46,9 @@ export const workflowsRouter = createTRPCRouter({
       },
     });
   }),
+  //  * - `remove`: Deletes a workflow by its ID for the authenticated user.
+  //  *   - **Input:** `{ id: string }`
+  //  *   - **Returns:** The deleted workflow object.
   remove: protectedProcedure.input(z.object({ id: z.string() })).mutation(({ ctx, input }) => {
     return prisma.workflow.delete({
       where: {
@@ -30,6 +57,27 @@ export const workflowsRouter = createTRPCRouter({
       },
     });
   }),
+  //  * - `update`: Updates the nodes and edges of a workflow.
+  //  *   - **Input:**
+  //  *     ```typescript
+  //  *     {
+  //  *       id: string,
+  //  *       nodes: Array<{
+  //  *         id: string,
+  //  *         type?: string,
+  //  *         position: { x: number, y: number },
+  //  *         data?: Record<string, unknown>
+  //  *       }>,
+  //  *       edges: Array<{
+  //  *         source: string,
+  //  *         target: string,
+  //  *         sourceHandle?: string,
+  //  *         targetHandle?: string
+  //  *       }>
+  //  *     }
+  //  *     ```
+  //  *   - **Returns:** The updated workflow object.
+  //  *   - **Notes:** Replaces all nodes and connections in a transaction for consistency.
   update: protectedProcedure
     .input(
       z.object({
@@ -97,6 +145,9 @@ export const workflowsRouter = createTRPCRouter({
         return workflow;
       });
     }),
+  //  * - `updateName`: Updates the name of a workflow.
+  //  *   - **Input:** `{ id: string, name: string }`
+  //  *   - **Returns:** The updated workflow object.
   updateName: protectedProcedure
     .input(z.object({ id: z.string(), name: z.string().min(1) }))
     .mutation(({ ctx, input }) => {
@@ -110,6 +161,10 @@ export const workflowsRouter = createTRPCRouter({
         },
       });
     }),
+  //  * - `getOne`: Retrieves a single workflow by its ID for the authenticated user.
+  //  *   - **Input:** `{ id: string }`
+  //  *   - **Returns:** An object containing the workflow's id, name, nodes, and edges.
+  //  *   - **Notes:** Converts server-side nodes and connections to client-expected formats.
   getOne: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
     const workflow = await prisma.workflow.findUniqueOrThrow({
       where: { id: input.id, userId: ctx.auth.user.id },
@@ -138,6 +193,16 @@ export const workflowsRouter = createTRPCRouter({
       edges,
     };
   }),
+  //  * - `getMany`: Retrieves a paginated list of workflows for the authenticated user, with optional search.
+  //  *   - **Input:**
+  //  *     ```typescript
+  //  *     {
+  //  *       page?: number,
+  //  *       pageSize?: number,
+  //  *       search?: string
+  //  *     }
+  //  *     ```
+  //  *   - **Returns:** An object containing items, pagination info, and total counts.
   getMany: protectedProcedure
     .input(
       z.object({

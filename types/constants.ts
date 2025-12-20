@@ -1,4 +1,5 @@
 import { workflowsParams } from "@/features/workflows/params";
+import { GetStepTools, Inngest } from "inngest";
 import { inferParserType, SearchParams } from "nuqs";
 
 export type SearchProps = {
@@ -44,3 +45,16 @@ export type EntityHeaderProps = {
       newButtonHref?: never;
     }
 );
+
+export type WorkflowContext = Record<string, unknown>;
+export type StepTools = GetStepTools<Inngest.Any>;
+export interface NodeExecutorParams<TData = Record<string, unknown>> {
+  data: TData;
+  nodeId: string;
+  context: WorkflowContext;
+  step: StepTools;
+}
+
+export type NodeExecutor<TData = Record<string, unknown>> = (
+  params: NodeExecutorParams<TData>
+) => Promise<WorkflowContext>;
