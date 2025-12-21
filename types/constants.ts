@@ -1,4 +1,5 @@
 import { workflowsParams } from "@/features/workflows/params";
+import { type Realtime } from "@inngest/realtime";
 import { GetStepTools, Inngest } from "inngest";
 import { inferParserType, SearchParams } from "nuqs";
 
@@ -53,6 +54,7 @@ export interface NodeExecutorParams<TData = Record<string, unknown>> {
   nodeId: string;
   context: WorkflowContext;
   step: StepTools;
+  publish: Realtime.PublishFn;
 }
 
 export type NodeExecutor<TData = Record<string, unknown>> = (
