@@ -58,7 +58,7 @@ const formSchema = z.object({
     }),
   model: z.enum(AVAILABLE_MODELS),
   systemPrompt: z.string().optional(),
-  userPrompt: z.string().min(1, "User prompt is required")
+  userPrompt: z.string().min(1, "User prompt is required"),
 });
 
 export type GeminiFormValues = z.infer<typeof formSchema>;
@@ -99,7 +99,14 @@ export const GeminiDialog = ({ open, onOpenChange, onSubmit, defaultValues }: Pr
         userPrompt: defaultValues?.userPrompt,
       });
     }
-  }, [defaultValues?.model, defaultValues?.systemPrompt, defaultValues?.userPrompt, defaultValues?.variableName, form, open]);
+  }, [
+    defaultValues?.model,
+    defaultValues?.systemPrompt,
+    defaultValues?.userPrompt,
+    defaultValues?.variableName,
+    form,
+    open,
+  ]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -133,10 +140,7 @@ export const GeminiDialog = ({ open, onOpenChange, onSubmit, defaultValues }: Pr
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Model</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select a model" />
@@ -150,14 +154,11 @@ export const GeminiDialog = ({ open, onOpenChange, onSubmit, defaultValues }: Pr
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormDescription>
-                    The Google Gemini model to use for completion
-                  </FormDescription>
+                  <FormDescription>The Google Gemini model to use for completion</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
 
             <FormField
               control={form.control}
@@ -173,7 +174,8 @@ export const GeminiDialog = ({ open, onOpenChange, onSubmit, defaultValues }: Pr
                     />
                   </FormControl>
                   <FormDescription>
-                    Sets the behaviour of the assistant. Use {"{{variables}}"} for single values or {"{{json variable}}"} to stringify objects
+                    Sets the behaviour of the assistant. Use {"{{variables}}"} for single values or{" "}
+                    {"{{json variable}}"} to stringify objects
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -193,7 +195,8 @@ export const GeminiDialog = ({ open, onOpenChange, onSubmit, defaultValues }: Pr
                     />
                   </FormControl>
                   <FormDescription>
-                    The prompt to send to the AI. Use {"{{variables}}"} for simple values or {"{{json variable}}"} to stringify objects
+                    The prompt to send to the AI. Use {"{{variables}}"} for simple values or{" "}
+                    {"{{json variable}}"} to stringify objects
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

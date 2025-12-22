@@ -11,7 +11,7 @@ export const StripeTriggerNode = memo((props: NodeProps) => {
     nodeId: props.id,
     channel: STRIPE_TRIGGER_CHANNEL_NAME,
     topic: "status",
-    refreshToken: fetchStripeTriggerRealtimeToken
+    refreshToken: fetchStripeTriggerRealtimeToken,
   });
   const [dialogOpen, setDialogOpen] = useState(false);
   const handleOnSetting = () => setDialogOpen(!dialogOpen);

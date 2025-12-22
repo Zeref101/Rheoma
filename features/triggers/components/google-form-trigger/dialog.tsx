@@ -27,8 +27,6 @@ export const GoogleFormTriggerDialog = ({ open, onOpenChange }: Props) => {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   const webhookUrl = `${baseUrl}/api/webhooks/google-form?workflowId=${workflowId}`;
 
-
-
   const copyToCipboard = async () => {
     try {
       await navigator.clipboard.writeText(webhookUrl);
@@ -63,7 +61,7 @@ export const GoogleFormTriggerDialog = ({ open, onOpenChange }: Props) => {
             <div className="flex gap-2">
               <Input id="webhook-url" value={webhookUrl} readOnly className="font-mono text-sm" />
               <Button type="button" size={"icon"} variant={"outline"} onClick={copyToCipboard}>
-                <CopyIcon className="mr-2 size-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                <CopyIcon className="text-muted-foreground group-hover:text-foreground mr-2 size-4 transition-colors" />
               </Button>
             </div>
           </div>
@@ -75,25 +73,22 @@ export const GoogleFormTriggerDialog = ({ open, onOpenChange }: Props) => {
                 Click <strong>⋮ (three dots) → Apps Script</strong>.
               </li>
               <li>
-                Copy the function from the <strong>Copy</strong> button below and paste it into the script
-                editor.
+                Copy the function from the <strong>Copy</strong> button below and paste it into the
+                script editor.
               </li>
-              <li>
-                Save the script.
-              </li>
+              <li>Save the script.</li>
               <li>
                 Go to <strong>Triggers</strong>.
               </li>
               <li>
-                Open <strong>Triggers</strong>, set the <strong>event source</strong> → <strong>From form</strong>, and <strong>event type</strong> → <strong>On form submit</strong> and save.
+                Open <strong>Triggers</strong>, set the <strong>event source</strong> →{" "}
+                <strong>From form</strong>, and <strong>event type</strong> →{" "}
+                <strong>On form submit</strong> and save.
               </li>
 
-              <li>
-                Submit a test response in your Google Form to verify the trigger.
-              </li>
+              <li>Submit a test response in your Google Form to verify the trigger.</li>
             </ol>
           </div>
-
 
           <div className="bg-muted space-y-3 rounded-lg p-4">
             <h4 className="text-sm font-medium">Google Apps Script</h4>
@@ -102,34 +97,33 @@ export const GoogleFormTriggerDialog = ({ open, onOpenChange }: Props) => {
               type="button"
               variant="outline"
               onClick={copyAppsScript}
-              className="group hover:text-muted-foreground "
+              className="group hover:text-muted-foreground"
             >
-              <CopyIcon className="mr-2 size-4 text-muted-foreground transition-colors" />
+              <CopyIcon className="text-muted-foreground mr-2 size-4 transition-colors" />
               Copy Google Apps Script
             </Button>
 
-
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               This script includes your webhook URL and handles form submissions automatically.
             </p>
           </div>
-          <div className="rounded-lg bg-muted p-4 space-y-2">
-            <h4 className="font-medium text-sm">Available Variables</h4>
-            <ul className="text-sm text-muted-foreground space-y-1">
+          <div className="bg-muted space-y-2 rounded-lg p-4">
+            <h4 className="text-sm font-medium">Available Variables</h4>
+            <ul className="text-muted-foreground space-y-1 text-sm">
               <li>
-                <code className="bg-background px-1 py-0.5 rounded">
+                <code className="bg-background rounded px-1 py-0.5">
                   {"{{formData.respondentEmail}}"}
                 </code>
                 - Responded&apos; email
               </li>
               <li className="items-start gap-2">
-                <code className="bg-background px-1 py-0.5 rounded font-mono text-xs">
+                <code className="bg-background rounded px-1 py-0.5 font-mono text-xs">
                   {"{{ formData.responses['<Question Title>'] }}"}
                 </code>
                 - Specific answer by question title
               </li>
               <li className="items-start gap-2">
-                <code className="bg-background px-1 py-0.5 rounded font-mono text-xs">
+                <code className="bg-background rounded px-1 py-0.5 font-mono text-xs">
                   {"{{ json formData.responses}}"}
                 </code>
                 - All responses as JSON

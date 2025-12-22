@@ -20,11 +20,13 @@ export const GeminiNode = memo((props: NodeProps<GeminiNodeType>) => {
     nodeId: props.id,
     channel: geminiChannel().name,
     topic: "status",
-    refreshToken: fetchGeminiRealtimeToken
+    refreshToken: fetchGeminiRealtimeToken,
   });
   const [dialogOpen, setDialogOpen] = useState(false);
   const nodeData = props.data;
-  const description = nodeData?.userPrompt ? `${nodeData.model || AVAILABLE_MODELS[0]} : ${nodeData.userPrompt.slice(0, 50)}` : `Not Configured`;
+  const description = nodeData?.userPrompt
+    ? `${nodeData.model || AVAILABLE_MODELS[0]} : ${nodeData.userPrompt.slice(0, 50)}`
+    : `Not Configured`;
   const { setNodes } = useReactFlow();
 
   const handleOnSetting = () => setDialogOpen(!dialogOpen);

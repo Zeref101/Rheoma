@@ -22,7 +22,7 @@ export const HttpRequestNode = memo((props: NodeProps<HttpRequestNodeType>) => {
     nodeId: props.id,
     channel: httpRequestChannel().name,
     topic: "status",
-    refreshToken: fetchHttpRequestRealtimeToken
+    refreshToken: fetchHttpRequestRealtimeToken,
   });
   const [dialogOpen, setDialogOpen] = useState(false);
   const nodeData = props.data;

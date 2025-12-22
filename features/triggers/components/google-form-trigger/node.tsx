@@ -11,7 +11,7 @@ export const GoogleFormTriggerNode = memo((props: NodeProps) => {
     nodeId: props.id,
     channel: GOOGLE_FORM_TRIGGER_CHANNEL_NAME,
     topic: "status",
-    refreshToken: fetchGoogleFormTriggerRealtimeToken
+    refreshToken: fetchGoogleFormTriggerRealtimeToken,
   });
   const [dialogOpen, setDialogOpen] = useState(false);
   const handleOnSetting = () => setDialogOpen(!dialogOpen);
