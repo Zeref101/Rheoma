@@ -6,6 +6,7 @@ import prisma from "@/lib/db";
 import { generateSlug } from "random-word-slugs";
 import z from "zod";
 import { inngest } from "@/inngest/client";
+import { sendWorkflowExecution } from "@/inngest/util/utils";
 
 export const workflowsRouter = createTRPCRouter({
   //  * - `execute`: Executes a workflow by its ID.
@@ -18,12 +19,8 @@ export const workflowsRouter = createTRPCRouter({
         id: input.id,
       },
     });
-    await inngest.send({
-      name: "workflows/execute.workflow",
-      data: {
-        workflowId: input.id,
-        initalData: {},
-      },
+    await sendWorkflowExecution({
+      workflowId: input.id,
     });
     return workflow;
   }),

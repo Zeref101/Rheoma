@@ -3,7 +3,7 @@ import { NonRetriableError } from "inngest";
 import ky, { Options as KyOptions } from "ky";
 import Handlebars from "handlebars";
 import { httpRequestChannel } from "@/inngest/channels/http-request";
-import { withNodeStatus } from "../../utils/with-node-status";
+import { withNodeStatus } from "./utils/with-node-status";
 
 type HttpRequestData = {
   variableName?: string;
@@ -29,8 +29,9 @@ export const httpRequestExecution: NodeExecutor<HttpRequestData> = async ({
       publish,
       channel: httpRequestChannel(),
       run: async () => {
+        console.log(data);
+        console.log("context: " + JSON.stringify(context));
         const endpoint = Handlebars.compile(data.endpoint)(context);
-
         if (!endpoint) {
           throw new NonRetriableError("Endpoint is required for HTTP request");
         }

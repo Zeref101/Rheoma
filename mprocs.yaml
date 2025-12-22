@@ -9,3 +9,5 @@ procs:
     autorestart: true
   prismaStudio:
     cmd: ["npx", "prisma", "studio"]
+  ngrok:
+    cmd: ["pnpm", "run", "ngrok:dev"]

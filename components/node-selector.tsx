@@ -1,6 +1,6 @@
 "use client";
 import { createId } from "@paralleldrive/cuid2";
-import { Position, useReactFlow } from "@xyflow/react";
+import { useReactFlow } from "@xyflow/react";
 import { GlobeIcon, MousePointerIcon } from "lucide-react";
 import React, { ReactNode, useCallback } from "react";
 import { toast } from "sonner";
@@ -29,6 +29,12 @@ const triggerNodes: NodeTypeOption[] = [
     label: "Trigger manually",
     description: "Runs the flow on clicking a button. Good for getting started quickly",
     icon: MousePointerIcon,
+  },
+  {
+    type: NodeType.GOOGLE_FORM_TRIGGER,
+    label: "Google Form",
+    description: "Runs the flow on when a Google form is submitted",
+    icon: "/logos/googleform.svg",
   },
 ];
 
@@ -127,6 +133,8 @@ function NodeTypeRow({ option, onSelect }: NodeTypeRowProps) {
           src={Icon}
           alt={option.label}
           className="size-5 shrink-0 rounded-sm object-contain"
+          width={20}
+          height={20}
         />
       ) : (
         <Icon className="size-5 shrink-0" />

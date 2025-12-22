@@ -9,6 +9,7 @@
     "lint": "eslint",
     "inngest:dev": "inngest-cli dev",
     "inngest:dev:npx": "npx inngest-cli@1.12.1 dev",
+    "ngrok:dev": "ngrok http --url=cordless-phil-unmowed.ngrok-free.dev 3000",
     "dev:all": "mprocs",
     "mprocs": "mprocs",
     "format": "prettier --write .",
