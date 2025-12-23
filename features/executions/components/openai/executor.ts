@@ -1,9 +1,9 @@
 import type { NodeExecutor } from "@/types/constants";
 import Handlebars from "handlebars";
-import { AVAILABLE_MODELS, GeminiModel } from "./dialog";
-import { geminiChannel } from "@/inngest/channels/gemini";
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { AVAILABLE_MODELS, OpenAiModel } from "./dialog";
+import { createOpenAI } from "@ai-sdk/openai";
 import { generateText } from "ai";
+import { openAiChannel } from "@/inngest/channels/openai";
 
 Handlebars.registerHelper("json", (context) => {
   const stringified = JSON.stringify(context, null, 2);
@@ -11,14 +11,14 @@ Handlebars.registerHelper("json", (context) => {
   return safeString;
 });
 
-type GeminiData = {
+type OpenAiData = {
   variableName?: string;
-  model?: GeminiModel;
+  model?: OpenAiModel;
   systemPrompt?: string;
   userPrompt?: string;
 };
 
-export const geminiExecution: NodeExecutor<GeminiData> = async ({
+export const openAiExecution: NodeExecutor<OpenAiData> = async ({
   data,
   nodeId,
   context,
@@ -26,7 +26,7 @@ export const geminiExecution: NodeExecutor<GeminiData> = async ({
   publish,
 }) => {
   await publish(
-    geminiChannel().status({
+    openAiChannel().status({
       nodeId,
       status: "loading",
     })
@@ -38,14 +38,14 @@ export const geminiExecution: NodeExecutor<GeminiData> = async ({
     const userPrompt = Handlebars.compile(data.userPrompt)(context);
 
     // TODO: fetch credential of user
-    const credentialValue = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+    const credentialValue = process.env.OPENAI_API_KEY;
 
-    const google = createGoogleGenerativeAI({
+    const openAi = createOpenAI({
       apiKey: credentialValue,
     });
 
-    const { steps } = await step.ai.wrap("gemini-generate-ai", generateText, {
-      model: google(data.model || AVAILABLE_MODELS[0]),
+    const { steps } = await step.ai.wrap("openai-generate-ai", generateText, {
+      model: openAi(data.model || AVAILABLE_MODELS[0]),
       system: systemPrompt,
       prompt: userPrompt,
       experimental_telemetry: {
@@ -55,14 +55,12 @@ export const geminiExecution: NodeExecutor<GeminiData> = async ({
       },
     });
 
-    console.log(JSON.stringify(steps));
-
     const text = steps[0].content[0].type === "text" ? steps[0].content[0].text : "";
 
     const variableKey = data.variableName ?? "aiResponse";
 
     await publish(
-      geminiChannel().status({
+      openAiChannel().status({
         nodeId,
         status: "success",
       })
@@ -75,7 +73,7 @@ export const geminiExecution: NodeExecutor<GeminiData> = async ({
     };
   } catch (error) {
     await publish(
-      geminiChannel().status({
+      openAiChannel().status({
         nodeId,
         status: "error",
       })
