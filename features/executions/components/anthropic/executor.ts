@@ -4,6 +4,8 @@ import { AnthropicModel, AVAILABLE_MODELS } from "./dialog";
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { generateText } from "ai";
 import { anthropicChannel } from "@/inngest/channels/anthropic";
+import { NonRetriableError } from "inngest";
+import prisma from "@/lib/db";
 
 Handlebars.registerHelper("json", (context) => {
   const stringified = JSON.stringify(context, null, 2);
@@ -12,6 +14,7 @@ Handlebars.registerHelper("json", (context) => {
 });
 
 type OpenAiData = {
+  credentialId?: string;
   variableName?: string;
   model?: AnthropicModel;
   systemPrompt?: string;
@@ -31,21 +34,38 @@ export const anthropicExecution: NodeExecutor<OpenAiData> = async ({
       status: "loading",
     })
   );
+  if (!data.credentialId) {
+    await publish(
+      anthropicChannel().status({
+        nodeId,
+        status: "error",
+      })
+    );
+    throw new NonRetriableError("Gemini node: Credential is missing");
+  }
   try {
     const systemPrompt = data.systemPrompt
       ? Handlebars.compile(data.systemPrompt)(context)
       : "You are a helpful assistent";
     const userPrompt = Handlebars.compile(data.userPrompt)(context);
 
-    // TODO: fetch credential of user
-    const credentialValue = process.env.ANTHROPIC_API_KEY;
-
-    const openAi = createAnthropic({
-      apiKey: credentialValue,
+    const credential = await step.run("get-credential", () => {
+      return prisma.credential.findUnique({
+        where: {
+          id: data.credentialId,
+        },
+      });
     });
 
-    const { steps } = await step.ai.wrap("openai-generate-ai", generateText, {
-      model: openAi(data.model || AVAILABLE_MODELS[0]),
+    if (!data.credentialId) {
+      throw new NonRetriableError("Anthropic node: Credential is missing");
+    }
+    const anthropic = createAnthropic({
+      apiKey: credential?.value,
+    });
+
+    const { steps } = await step.ai.wrap("anthropic-generate-ai", generateText, {
+      model: anthropic(data.model || AVAILABLE_MODELS[0]),
       system: systemPrompt,
       prompt: userPrompt,
       experimental_telemetry: {

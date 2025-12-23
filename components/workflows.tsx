@@ -20,7 +20,6 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTRPC } from "@/app/trpc/routers/client";
-import { WorkflowsListProps } from "@/types/constants";
 import { useWorkflowsParams } from "@/features/workflows/hooks/use-workflows-params";
 import { useEntitySearch } from "@/hooks/use-entity-search";
 import type { Workflow } from "@/app/generated/prisma/client";
@@ -38,8 +37,8 @@ export const WorkflowsSearch = () => {
   );
 };
 
-export const WorkflowsList = ({ initialParams }: WorkflowsListProps) => {
-  const workflows = useSuspenseWorkflows(initialParams);
+export const WorkflowsList = () => {
+  const workflows = useSuspenseWorkflows();
 
   return (
     <EntityList

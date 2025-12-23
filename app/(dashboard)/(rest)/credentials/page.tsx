@@ -1,9 +1,34 @@
+import { HydrateClient } from "@/app/trpc/routers/server";
+import { CredentialsContainer, CredentialsError, CredentialsList, CredentialsLoading } from "@/features/credentials/components/credentials";
+import { credentialsParamsLoader } from "@/features/credentials/server/params-loader";
+import { prefetchCredentials } from "@/features/credentials/server/prefetch";
 import { requireAuth } from "@/lib/auth-utils";
-import React from "react";
+import { SearchParams } from "nuqs";
+import React, { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 
-const page = async () => {
+type Props = {
+  searchParams: Promise<SearchParams>;
+}
+
+const page = async ({
+  searchParams
+}: Props) => {
   await requireAuth();
-  return <div>Credentials</div>;
+  const params = await credentialsParamsLoader(searchParams);
+  prefetchCredentials(params);
+
+  return (
+    <CredentialsContainer>
+      <HydrateClient>
+        <ErrorBoundary fallback={<CredentialsError />}>
+          <Suspense fallback={<CredentialsLoading />}>
+            <CredentialsList />
+          </Suspense>
+        </ErrorBoundary>
+      </HydrateClient>
+    </CredentialsContainer>
+  );
 };
 
 export default page;

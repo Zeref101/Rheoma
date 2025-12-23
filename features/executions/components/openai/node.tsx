@@ -8,6 +8,7 @@ import { AVAILABLE_MODELS, OpenAiDialog, OpenAiFormValues, OpenAiModel } from ".
 import { openAiChannel } from "@/inngest/channels/openai";
 
 type OpenAiNodeData = {
+  credentialId?: string;
   model?: OpenAiModel;
   systemPrompt?: string;
   userPrompt?: string;

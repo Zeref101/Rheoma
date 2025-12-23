@@ -1,3 +1,4 @@
+import { credentialsParams } from "@/features/credentials/params";
 import { workflowsParams } from "@/features/workflows/params";
 import { type Realtime } from "@inngest/realtime";
 import { GetStepTools, Inngest } from "inngest";
@@ -14,6 +15,7 @@ export type GetManyInput = {
 };
 
 export type WorkflowsParams = inferParserType<typeof workflowsParams>;
+export type CredentialParams = inferParserType<typeof credentialsParams>;
 
 export type WorkflowsListProps = {
   initialParams?: WorkflowsParams;

@@ -8,6 +8,7 @@ import { geminiChannel } from "@/inngest/channels/gemini";
 import { AVAILABLE_MODELS, GeminiDialog, GeminiFormValues, GeminiModel } from "./dialog";
 
 type GeminiNodeData = {
+  credentialId?: string;
   model?: GeminiModel;
   systemPrompt?: string;
   userPrompt?: string;

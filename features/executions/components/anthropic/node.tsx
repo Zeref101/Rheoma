@@ -8,6 +8,7 @@ import { AnthropicDialog, AnthropicFormValues, AnthropicModel, AVAILABLE_MODELS 
 import { anthropicChannel } from "@/inngest/channels/anthropic";
 
 type AnthropicNodeData = {
+  credentialId?: string;
   model?: AnthropicModel;
   systemPrompt?: string;
   userPrompt?: string;
