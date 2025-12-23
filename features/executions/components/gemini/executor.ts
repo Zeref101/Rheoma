@@ -1,6 +1,6 @@
 import type { NodeExecutor } from "@/types/constants";
 import Handlebars from "handlebars";
-import { GeminiModel } from "./dialog";
+import { AVAILABLE_MODELS, GeminiModel } from "./dialog";
 import { geminiChannel } from "@/inngest/channels/gemini";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateText } from "ai";
@@ -45,7 +45,7 @@ export const geminiExecution: NodeExecutor<GeminiData> = async ({
     });
 
     const { steps } = await step.ai.wrap("gemini-generate-ai", generateText, {
-      model: google("gemini-2.5-flash"),
+      model: google(data.model || AVAILABLE_MODELS[0]),
       system: systemPrompt,
       prompt: userPrompt,
       experimental_telemetry: {
