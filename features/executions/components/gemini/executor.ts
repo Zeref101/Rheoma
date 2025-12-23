@@ -38,7 +38,7 @@ export const geminiExecution: NodeExecutor<GeminiData> = async ({
     const userPrompt = Handlebars.compile(data.userPrompt)(context);
 
     // TODO: fetch credential of user
-    const credentialValue = "AIzaSyBTfNbdAicN-395YyaiUTtq5fU0GPFmeQY";
+    const credentialValue = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
 
     const google = createGoogleGenerativeAI({
       apiKey: credentialValue,
