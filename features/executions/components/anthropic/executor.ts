@@ -58,6 +58,12 @@ export const anthropicExecution: NodeExecutor<OpenAiData> = async ({
     });
 
     if (!data.credentialId) {
+      await publish(
+        anthropicChannel().status({
+          nodeId,
+          status: "error",
+        })
+      );
       throw new NonRetriableError("Anthropic node: Credential is missing");
     }
     const anthropic = createAnthropic({

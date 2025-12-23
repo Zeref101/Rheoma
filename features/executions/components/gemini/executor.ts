@@ -50,14 +50,21 @@ export const geminiExecution: NodeExecutor<GeminiData> = async ({
     const userPrompt = Handlebars.compile(data.userPrompt)(context);
 
     const credential = await step.run("get-credential", () => {
-      return prisma.credential.findUnique({
+      return prisma.credential.findFirst({
         where: {
           id: data.credentialId,
+          // userId: context.userid // TODO :: fix this and use userid for authorization and prevent credential injection
         },
       });
     });
 
     if (!data.credentialId) {
+      await publish(
+        geminiChannel().status({
+          nodeId,
+          status: "error",
+        })
+      );
       throw new NonRetriableError("Gemini node: Credential is missing");
     }
 

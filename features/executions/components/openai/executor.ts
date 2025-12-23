@@ -58,6 +58,12 @@ export const openAiExecution: NodeExecutor<OpenAiData> = async ({
     });
 
     if (!data.credentialId) {
+      await publish(
+        openAiChannel().status({
+          nodeId,
+          status: "error",
+        })
+      );
       throw new NonRetriableError("Gemini node: Credential is missing");
     }
     const openAi = createOpenAI({
