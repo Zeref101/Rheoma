@@ -1,13 +1,13 @@
 "use server";
 import { getSubscriptionToken, Realtime } from "@inngest/realtime";
 import { inngest } from "@/inngest/client";
-import { discordChannel } from "@/inngest/channels/discord";
+import { slackChannel } from "@/inngest/channels/slack";
 
-export type DiscordToken = Realtime.Token<typeof discordChannel, ["status"]>;
+export type SlackToken = Realtime.Token<typeof slackChannel, ["status"]>;
 
-export async function fetchDiscordRealtimeToken(): Promise<DiscordToken> {
+export async function fetchSlackRealtimeToken(): Promise<SlackToken> {
   const token = await getSubscriptionToken(inngest, {
-    channel: discordChannel(),
+    channel: slackChannel(),
     topics: ["status"],
   });
   return token;
