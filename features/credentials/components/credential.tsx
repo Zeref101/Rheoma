@@ -155,7 +155,7 @@ export const CredentialForm = ({ initialData }: CredentialFormProps) => {
               render={({ field }) => {
                 return (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>API Key</FormLabel>
                     <FormControl>
                       <Input
                         type="password"

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { email, z } from "zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -18,14 +18,12 @@ import {
 import {
   Card,
   CardContent,
-  CardFooter,
   CardDescription,
   CardTitle,
   CardHeader,
 } from "@/components/ui/card";
 
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
 import { authClient } from "@/lib/auth-client";
 
 const registerSchema = z
@@ -51,7 +49,30 @@ export function RegisterForm() {
       confirmPassword: "",
     },
   });
-
+  const signInWithGithub = async () => {
+    await authClient.signIn.social({
+      provider: "github"
+    }, {
+      onSuccess: () => {
+        router.push("/");
+      },
+      onError: () => {
+        toast.error("Something went wrong");
+      }
+    })
+  };
+  const signInWithGoogle = async () => {
+    await authClient.signIn.social({
+      provider: "google"
+    }, {
+      onSuccess: () => {
+        router.push("/");
+      },
+      onError: () => {
+        toast.error("Something went wrong");
+      }
+    })
+  };
   const onSubmit = async (values: LoginFormValues) => {
     await authClient.signUp.email(
       {
@@ -74,81 +95,140 @@ export function RegisterForm() {
   const isPending = form.formState.isSubmitting;
 
   return (
-    <div className="flex flex-col gap-6">
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle>Get Started</CardTitle>
-          <CardDescription>Create an account to continue</CardDescription>
+    <div className="min-w-sm w-xl flex items-center justify-center px-4">
+      <Card className="w-full max-w-md shadow-lg border-border/60">
+        <CardHeader className="text-center space-y-1">
+          <CardTitle className="text-2xl">Get started</CardTitle>
+          <CardDescription className="text-muted-foreground">
+            Create an account to continue
+          </CardDescription>
         </CardHeader>
+
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="grid gap-6">
-                <div className="flex flex-col gap-4">
-                  <Button variant={"outline"} className="w-full" type="button" disabled={isPending}>
-                    <Image alt="Github" src={"/logos/github.png"} width={20} height={20} />
-                    Continue with GitHub
-                  </Button>
-                  <Button variant={"outline"} className="w-full" type="button" disabled={isPending}>
-                    <Image alt="Google" src={"/logos/google.svg"} width={20} height={20} />
-                    Continue with Google
-                  </Button>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {/* OAuth */}
+              <div className="space-y-3">
+                <Button
+                  variant="outline"
+                  type="button"
+                  disabled={isPending}
+                  onClick={signInWithGithub}
+                  className="w-full flex items-center gap-2 hover:text-accent"
+                >
+                  <Image
+                    src="/logos/github.png"
+                    alt="GitHub"
+                    width={18}
+                    height={18}
+                  />
+                  Continue with GitHub
+                </Button>
+
+                <Button
+                  variant="outline"
+                  type="button"
+                  disabled={isPending}
+                  onClick={signInWithGoogle}
+                  className="w-full flex items-center gap-2 hover:text-accent"
+                >
+                  <Image
+                    src="/logos/google.svg"
+                    alt="Google"
+                    width={18}
+                    height={18}
+                  />
+                  Continue with Google
+                </Button>
+              </div>
+
+              {/* Divider */}
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-border" />
                 </div>
-                <div className="grid gap-6">
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input type="email" placeholder="name@example.com" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="confirmPassword"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Confirm Password</FormLabel>
-                        <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <Button type="submit" className="w-full" disabled={isPending}>
-                    Register
-                  </Button>
-                </div>
-                <div className="text-center text-sm">
-                  Already have an account?{" "}
-                  <Link href="/login" className="underline underline-offset-4">
-                    Log in
-                  </Link>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-card px-2 text-muted-foreground">
+                    Or continue with email
+                  </span>
                 </div>
               </div>
+
+              {/* Email / Password */}
+              <div className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="name@example.com"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          placeholder="••••••••"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirm password</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          placeholder="••••••••"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <Button type="submit" className="w-full" disabled={isPending}>
+                Register
+              </Button>
+
+              <p className="text-center text-sm text-muted-foreground">
+                Already have an account?{" "}
+                <Link
+                  href="/login"
+                  className="underline underline-offset-4 text-primary"
+                >
+                  Log in
+                </Link>
+              </p>
             </form>
           </Form>
         </CardContent>
       </Card>
     </div>
   );
+
 }
