@@ -6,6 +6,7 @@ import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateText } from "ai";
 import { NonRetriableError } from "inngest";
 import prisma from "@/lib/db";
+import { decrypt } from "@/lib/encryption";
 
 Handlebars.registerHelper("json", (context) => {
   const stringified = JSON.stringify(context, null, 2);
@@ -68,9 +69,18 @@ export const geminiExecution: NodeExecutor<GeminiData> = async ({
       );
       throw new NonRetriableError("Gemini node: Credential is missing");
     }
+    if (!credential?.value) {
+      await publish(
+        geminiChannel().status({
+          nodeId,
+          status: "error",
+        })
+      );
 
+      throw new NonRetriableError("Gemini node: Credential is missing");
+    }
     const google = createGoogleGenerativeAI({
-      apiKey: credential?.value,
+      apiKey: decrypt(credential.value),
     });
 
     const { steps } = await step.ai.wrap("gemini-generate-ai", generateText, {
@@ -83,8 +93,6 @@ export const geminiExecution: NodeExecutor<GeminiData> = async ({
         recordOutputs: true,
       },
     });
-
-    console.log(JSON.stringify(steps));
 
     const text = steps[0].content[0].type === "text" ? steps[0].content[0].text : "";
 

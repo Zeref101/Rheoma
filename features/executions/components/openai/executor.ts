@@ -6,6 +6,7 @@ import { generateText } from "ai";
 import { openAiChannel } from "@/inngest/channels/openai";
 import { NonRetriableError } from "inngest";
 import prisma from "@/lib/db";
+import { decrypt } from "@/lib/encryption";
 
 Handlebars.registerHelper("json", (context) => {
   const stringified = JSON.stringify(context, null, 2);
@@ -68,8 +69,17 @@ export const openAiExecution: NodeExecutor<OpenAiData> = async ({
       );
       throw new NonRetriableError("Gemini node: Credential is missing");
     }
+    if (!credential?.value) {
+      await publish(
+        openAiChannel().status({
+          nodeId,
+          status: "error",
+        })
+      );
+      throw new NonRetriableError("Gemini node: Credential is missing");
+    }
     const openAi = createOpenAI({
-      apiKey: credential?.value,
+      apiKey: decrypt(credential.value),
     });
 
     const { steps } = await step.ai.wrap("openai-generate-ai", generateText, {

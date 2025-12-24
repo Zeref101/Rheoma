@@ -6,6 +6,7 @@ import { generateText } from "ai";
 import { anthropicChannel } from "@/inngest/channels/anthropic";
 import { NonRetriableError } from "inngest";
 import prisma from "@/lib/db";
+import { decrypt } from "@/lib/encryption";
 
 Handlebars.registerHelper("json", (context) => {
   const stringified = JSON.stringify(context, null, 2);
@@ -68,8 +69,17 @@ export const anthropicExecution: NodeExecutor<OpenAiData> = async ({
       );
       throw new NonRetriableError("Anthropic node: Credential is missing");
     }
+    if (!credential?.value) {
+      await publish(
+        anthropicChannel().status({
+          nodeId,
+          status: "error",
+        })
+      );
+      throw new NonRetriableError("Anthropic node: Credential is missing");
+    }
     const anthropic = createAnthropic({
-      apiKey: credential?.value,
+      apiKey: decrypt(credential.value),
     });
 
     const { steps } = await step.ai.wrap("anthropic-generate-ai", generateText, {
