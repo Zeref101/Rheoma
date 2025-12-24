@@ -65,12 +65,18 @@ const AppSideBar = () => {
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <SidebarMenuItem>
-          <SidebarMenuButton asChild className="h-10 gap-x-4 px-4">
-            <Link href={"/"} prefetch>
-              <Image src={"/logos/logo.png"} alt="logo" width={30} height={30} />
+          <SidebarMenuItem>
+            <Link
+              href="/"
+              prefetch
+              className="flex h-10 items-center gap-x-4 px-4
+               hover:bg-transparent focus:bg-transparent active:bg-transparent"
+            >
+              <Image src="/logos/logo.svg" alt="logo" width={30} height={30} />
               <span className="text-sm font-semibold">Rheoma</span>
             </Link>
-          </SidebarMenuButton>
+          </SidebarMenuItem>
+
         </SidebarMenuItem>
       </SidebarHeader>
       <SidebarContent>
