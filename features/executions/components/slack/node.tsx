@@ -23,7 +23,8 @@ export const SlackNode = memo((props: NodeProps<SlackNodeType>) => {
   });
   const [dialogOpen, setDialogOpen] = useState(false);
   const nodeData = props.data;
-  const description = nodeData.content ? `Send: ${nodeData.content.slice(0, 50)}...`
+  const description = nodeData.content
+    ? `Send: ${nodeData.content.slice(0, 50)}...`
     : "Not Configured";
   const { setNodes } = useReactFlow();
 

@@ -11,13 +11,7 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import { EntityContainerProps, EntityHeaderProps } from "@/types/constants";
 import { Input } from "./ui/input";
-import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "./ui/empty";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "./ui/empty";
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardTitle } from "./ui/card";

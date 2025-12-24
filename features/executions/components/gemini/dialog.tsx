@@ -68,7 +68,9 @@ const formSchema = z.object({
 export type GeminiFormValues = z.infer<typeof formSchema>;
 
 export const GeminiDialog = ({ open, onOpenChange, onSubmit, defaultValues }: Props) => {
-  const { data: credentials, isLoading: isLoadingCredentials } = useCredentialsByType(CredentialType.GEMINI)
+  const { data: credentials, isLoading: isLoadingCredentials } = useCredentialsByType(
+    CredentialType.GEMINI
+  );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -142,7 +144,11 @@ export const GeminiDialog = ({ open, onOpenChange, onSubmit, defaultValues }: Pr
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Gemini Credential</FormLabel>
-                  <Select disabled={isLoadingCredentials || !credentials} onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    disabled={isLoadingCredentials || !credentials}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select a credential" />

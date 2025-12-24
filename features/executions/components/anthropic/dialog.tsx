@@ -43,10 +43,7 @@ interface Props {
   defaultValues?: Partial<AnthropicFormValues>;
 }
 
-export const AVAILABLE_MODELS = [
-  "claude-sonnet-4-5",
-  "claude-3-5-sonnet-20241022",
-] as const;
+export const AVAILABLE_MODELS = ["claude-sonnet-4-5", "claude-3-5-sonnet-20241022"] as const;
 
 export type AnthropicModel = (typeof AVAILABLE_MODELS)[number];
 
@@ -67,7 +64,9 @@ const formSchema = z.object({
 export type AnthropicFormValues = z.infer<typeof formSchema>;
 
 export const AnthropicDialog = ({ open, onOpenChange, onSubmit, defaultValues }: Props) => {
-  const { data: credentials, isLoading: isLoadingCredentials } = useCredentialsByType(CredentialType.ANTHROPIC)
+  const { data: credentials, isLoading: isLoadingCredentials } = useCredentialsByType(
+    CredentialType.ANTHROPIC
+  );
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -140,7 +139,11 @@ export const AnthropicDialog = ({ open, onOpenChange, onSubmit, defaultValues }:
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Gemini Credential</FormLabel>
-                  <Select disabled={isLoadingCredentials || !credentials} onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    disabled={isLoadingCredentials || !credentials}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select a credential" />

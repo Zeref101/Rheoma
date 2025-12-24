@@ -1,6 +1,9 @@
 import { HydrateClient } from "@/app/trpc/routers/server";
 import { CredentialView } from "@/features/credentials/components/credential";
-import { CredentialsError, CredentialsLoading } from "@/features/credentials/components/credentials";
+import {
+  CredentialsError,
+  CredentialsLoading,
+} from "@/features/credentials/components/credentials";
 import { prefetchCredential } from "@/features/credentials/server/prefetch";
 import { requireAuth } from "@/lib/auth-utils";
 import { Suspense } from "react";
@@ -16,8 +19,8 @@ const Page = async ({ params }: Props) => {
 
   prefetchCredential(credentialId);
   return (
-    <div className='p-4 md:px-10 md:py-6 h-full'>
-      <div className="mx-auto max-w-3xl w-full flex flex-col gap-y-8 h-full">
+    <div className="h-full p-4 md:px-10 md:py-6">
+      <div className="mx-auto flex h-full w-full max-w-3xl flex-col gap-y-8">
         <HydrateClient>
           <ErrorBoundary fallback={<CredentialsError />}>
             <Suspense fallback={<CredentialsLoading />}>

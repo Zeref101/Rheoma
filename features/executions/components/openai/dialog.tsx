@@ -43,12 +43,7 @@ interface Props {
   defaultValues?: Partial<OpenAiFormValues>;
 }
 
-export const AVAILABLE_MODELS = [
-  "gpt-4o-mini",
-  "gpt-4o",
-  "gpt-3.5-turbo",
-] as const;
-
+export const AVAILABLE_MODELS = ["gpt-4o-mini", "gpt-4o", "gpt-3.5-turbo"] as const;
 
 export type OpenAiModel = (typeof AVAILABLE_MODELS)[number];
 
@@ -69,7 +64,9 @@ const formSchema = z.object({
 export type OpenAiFormValues = z.infer<typeof formSchema>;
 
 export const OpenAiDialog = ({ open, onOpenChange, onSubmit, defaultValues }: Props) => {
-  const { data: credentials, isLoading: isLoadingCredentials } = useCredentialsByType(CredentialType.OPENAI);
+  const { data: credentials, isLoading: isLoadingCredentials } = useCredentialsByType(
+    CredentialType.OPENAI
+  );
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -147,7 +144,11 @@ export const OpenAiDialog = ({ open, onOpenChange, onSubmit, defaultValues }: Pr
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>OpenAI Credential</FormLabel>
-                  <Select disabled={isLoadingCredentials || !credentials} onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    disabled={isLoadingCredentials || !credentials}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select a credential" />

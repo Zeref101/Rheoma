@@ -45,20 +45,19 @@ const formSchema = z.object({
     .string()
     .min(1, "Message content is required")
     .max(2000, "Discord messages cannot exceed 2000 characters"),
-  webhookUrl: z.string().min(1, "Webhook URL is required")
+  webhookUrl: z.string().min(1, "Webhook URL is required"),
 });
 
 export type DiscordFormValues = z.infer<typeof formSchema>;
 
 export const DiscordDialog = ({ open, onOpenChange, onSubmit, defaultValues }: Props) => {
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       variableName: defaultValues?.variableName || "",
       username: defaultValues?.username || "",
       content: defaultValues?.content || "",
-      webhookUrl: defaultValues?.webhookUrl || ""
+      webhookUrl: defaultValues?.webhookUrl || "",
     },
   });
 
@@ -82,14 +81,23 @@ export const DiscordDialog = ({ open, onOpenChange, onSubmit, defaultValues }: P
         webhookUrl: defaultValues?.webhookUrl,
       });
     }
-  }, [defaultValues?.content, defaultValues?.username, defaultValues?.variableName, defaultValues?.webhookUrl, form, open]);
+  }, [
+    defaultValues?.content,
+    defaultValues?.username,
+    defaultValues?.variableName,
+    defaultValues?.webhookUrl,
+    form,
+    open,
+  ]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Discord Configuration</DialogTitle>
-          <DialogDescription>Configure the Discord webhook settings for this node.</DialogDescription>
+          <DialogDescription>
+            Configure the Discord webhook settings for this node.
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="mt-4 space-y-8">
@@ -117,12 +125,11 @@ export const DiscordDialog = ({ open, onOpenChange, onSubmit, defaultValues }: P
                 <FormItem>
                   <FormLabel>Webhook URL</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="https://discord.com/api/webhooks/..."
-                      {...field}
-                    />
+                    <Input placeholder="https://discord.com/api/webhooks/..." {...field} />
                   </FormControl>
-                  <FormDescription>Get this from Discord: Channel → Settings → Integrations → Webhooks</FormDescription>
+                  <FormDescription>
+                    Get this from Discord: Channel → Settings → Integrations → Webhooks
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -140,7 +147,10 @@ export const DiscordDialog = ({ open, onOpenChange, onSubmit, defaultValues }: P
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>The message to send. Use {"{{variables}}"} for simple values or {"{{json variable}}"} to stringify objects</FormDescription>
+                  <FormDescription>
+                    The message to send. Use {"{{variables}}"} for simple values or{" "}
+                    {"{{json variable}}"} to stringify objects
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -152,10 +162,7 @@ export const DiscordDialog = ({ open, onOpenChange, onSubmit, defaultValues }: P
                 <FormItem>
                   <FormLabel>Bot Username (optional)</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="workflow bot"
-                      {...field}
-                    />
+                    <Input placeholder="workflow bot" {...field} />
                   </FormControl>
                   <FormDescription>Override the workflow&apos; default behavious</FormDescription>
                   <FormMessage />
