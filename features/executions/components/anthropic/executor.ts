@@ -27,6 +27,7 @@ export const anthropicExecution: NodeExecutor<OpenAiData> = async ({
   context,
   step,
   publish,
+  userId,
 }) => {
   await publish(
     anthropicChannel().status({
@@ -41,7 +42,7 @@ export const anthropicExecution: NodeExecutor<OpenAiData> = async ({
         status: "error",
       })
     );
-    throw new NonRetriableError("Gemini node: Credential is missing");
+    throw new NonRetriableError("Anthropic node: Credential is missing");
   }
   try {
     const systemPrompt = data.systemPrompt
@@ -53,6 +54,7 @@ export const anthropicExecution: NodeExecutor<OpenAiData> = async ({
       return prisma.credential.findUnique({
         where: {
           id: data.credentialId,
+          userId: userId,
         },
       });
     });

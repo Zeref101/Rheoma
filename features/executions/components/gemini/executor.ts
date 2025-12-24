@@ -26,6 +26,7 @@ export const geminiExecution: NodeExecutor<GeminiData> = async ({
   nodeId,
   context,
   step,
+  userId,
   publish,
 }) => {
   await publish(
@@ -53,7 +54,7 @@ export const geminiExecution: NodeExecutor<GeminiData> = async ({
       return prisma.credential.findFirst({
         where: {
           id: data.credentialId,
-          // userId: context.userid // TODO :: fix this and use userid for authorization and prevent credential injection
+          userId: userId,
         },
       });
     });
