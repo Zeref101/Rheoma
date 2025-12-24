@@ -41,7 +41,6 @@ yarn-error.log*
 next-env.d.ts
 
 /lib/generated/prisma
-/app/generated
 mprocs.log
 # Sentry Config File
 .env.sentry-build-plugin
