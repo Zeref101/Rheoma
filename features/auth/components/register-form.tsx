@@ -15,13 +15,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardTitle,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardTitle, CardHeader } from "@/components/ui/card";
 
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
@@ -50,28 +44,34 @@ export function RegisterForm() {
     },
   });
   const signInWithGithub = async () => {
-    await authClient.signIn.social({
-      provider: "github"
-    }, {
-      onSuccess: () => {
-        router.push("/");
+    await authClient.signIn.social(
+      {
+        provider: "github",
       },
-      onError: () => {
-        toast.error("Something went wrong");
+      {
+        onSuccess: () => {
+          router.push("/");
+        },
+        onError: () => {
+          toast.error("Something went wrong");
+        },
       }
-    })
+    );
   };
   const signInWithGoogle = async () => {
-    await authClient.signIn.social({
-      provider: "google"
-    }, {
-      onSuccess: () => {
-        router.push("/");
+    await authClient.signIn.social(
+      {
+        provider: "google",
       },
-      onError: () => {
-        toast.error("Something went wrong");
+      {
+        onSuccess: () => {
+          router.push("/");
+        },
+        onError: () => {
+          toast.error("Something went wrong");
+        },
       }
-    })
+    );
   };
   const onSubmit = async (values: LoginFormValues) => {
     await authClient.signUp.email(
@@ -95,9 +95,9 @@ export function RegisterForm() {
   const isPending = form.formState.isSubmitting;
 
   return (
-    <div className="min-w-sm w-xl flex items-center justify-center px-4">
-      <Card className="w-full max-w-md shadow-lg border-border/60">
-        <CardHeader className="text-center space-y-1">
+    <div className="flex w-xl min-w-sm items-center justify-center px-4">
+      <Card className="border-border/60 w-full max-w-md shadow-lg">
+        <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl">Get started</CardTitle>
           <CardDescription className="text-muted-foreground">
             Create an account to continue
@@ -114,14 +114,9 @@ export function RegisterForm() {
                   type="button"
                   disabled={isPending}
                   onClick={signInWithGithub}
-                  className="w-full flex items-center gap-2 hover:text-accent"
+                  className="hover:text-accent flex w-full items-center gap-2"
                 >
-                  <Image
-                    src="/logos/github.png"
-                    alt="GitHub"
-                    width={18}
-                    height={18}
-                  />
+                  <Image src="/logos/github.png" alt="GitHub" width={18} height={18} />
                   Continue with GitHub
                 </Button>
 
@@ -130,14 +125,9 @@ export function RegisterForm() {
                   type="button"
                   disabled={isPending}
                   onClick={signInWithGoogle}
-                  className="w-full flex items-center gap-2 hover:text-accent"
+                  className="hover:text-accent flex w-full items-center gap-2"
                 >
-                  <Image
-                    src="/logos/google.svg"
-                    alt="Google"
-                    width={18}
-                    height={18}
-                  />
+                  <Image src="/logos/google.svg" alt="Google" width={18} height={18} />
                   Continue with Google
                 </Button>
               </div>
@@ -145,12 +135,10 @@ export function RegisterForm() {
               {/* Divider */}
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-border" />
+                  <span className="border-border w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">
-                    Or continue with email
-                  </span>
+                  <span className="bg-card text-muted-foreground px-2">Or continue with email</span>
                 </div>
               </div>
 
@@ -163,11 +151,7 @@ export function RegisterForm() {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input
-                          type="email"
-                          placeholder="name@example.com"
-                          {...field}
-                        />
+                        <Input type="email" placeholder="name@example.com" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -181,11 +165,7 @@ export function RegisterForm() {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="••••••••"
-                          {...field}
-                        />
+                        <Input type="password" placeholder="••••••••" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -199,11 +179,7 @@ export function RegisterForm() {
                     <FormItem>
                       <FormLabel>Confirm password</FormLabel>
                       <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="••••••••"
-                          {...field}
-                        />
+                        <Input type="password" placeholder="••••••••" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -215,12 +191,9 @@ export function RegisterForm() {
                 Register
               </Button>
 
-              <p className="text-center text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-center text-sm">
                 Already have an account?{" "}
-                <Link
-                  href="/login"
-                  className="underline underline-offset-4 text-primary"
-                >
+                <Link href="/login" className="text-primary underline underline-offset-4">
                   Log in
                 </Link>
               </p>
@@ -230,5 +203,4 @@ export function RegisterForm() {
       </Card>
     </div>
   );
-
 }

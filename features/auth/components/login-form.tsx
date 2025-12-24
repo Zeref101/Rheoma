@@ -17,13 +17,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardTitle,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardTitle, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 
@@ -51,7 +45,9 @@ export function LoginForm() {
       { provider: "github" },
       {
         onSuccess: () => router.push("/"),
-        onError: () => { toast.error("Something went wrong") },
+        onError: () => {
+          toast.error("Something went wrong");
+        },
       }
     );
   };
@@ -61,7 +57,9 @@ export function LoginForm() {
       { provider: "google" },
       {
         onSuccess: () => router.push("/"),
-        onError: () => { toast.error("Something went wrong") },
+        onError: () => {
+          toast.error("Something went wrong");
+        },
       }
     );
   };
@@ -75,19 +73,19 @@ export function LoginForm() {
       },
       {
         onSuccess: () => router.push("/"),
-        onError: (ctx) => { toast.error(ctx.error.message) },
+        onError: (ctx) => {
+          toast.error(ctx.error.message);
+        },
       }
     );
   };
 
   return (
-    <div className="min-w-sm w-xl flex items-center justify-center px-4">
-      <Card className="w-full max-w-md shadow-lg border-border/60">
-        <CardHeader className="text-center space-y-1">
+    <div className="flex w-xl min-w-sm items-center justify-center px-4">
+      <Card className="border-border/60 w-full max-w-md shadow-lg">
+        <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl">Welcome back</CardTitle>
-          <CardDescription className="text-muted-foreground">
-            Login to continue
-          </CardDescription>
+          <CardDescription className="text-muted-foreground">Login to continue</CardDescription>
         </CardHeader>
 
         <CardContent>
@@ -100,7 +98,7 @@ export function LoginForm() {
                   type="button"
                   disabled={isPending}
                   onClick={signInWithGithub}
-                  className="w-full flex items-center gap-2 hover:text-accent"
+                  className="hover:text-accent flex w-full items-center gap-2"
                 >
                   <Image src="/logos/github.png" alt="GitHub" width={18} height={18} />
                   Continue with GitHub
@@ -111,7 +109,7 @@ export function LoginForm() {
                   type="button"
                   disabled={isPending}
                   onClick={signInWithGoogle}
-                  className="w-full flex items-center gap-2 hover:text-accent"
+                  className="hover:text-accent flex w-full items-center gap-2"
                 >
                   <Image src="/logos/google.svg" alt="Google" width={18} height={18} />
                   <span>Continue with Google</span>
@@ -121,12 +119,10 @@ export function LoginForm() {
               {/* Divider */}
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-border" />
+                  <span className="border-border w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">
-                    Or continue with email
-                  </span>
+                  <span className="bg-card text-muted-foreground px-2">Or continue with email</span>
                 </div>
               </div>
 
@@ -139,11 +135,7 @@ export function LoginForm() {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input
-                          type="email"
-                          placeholder="name@example.com"
-                          {...field}
-                        />
+                        <Input type="email" placeholder="name@example.com" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -157,11 +149,7 @@ export function LoginForm() {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="••••••••"
-                          {...field}
-                        />
+                        <Input type="password" placeholder="••••••••" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -169,20 +157,13 @@ export function LoginForm() {
                 />
               </div>
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isPending}
-              >
+              <Button type="submit" className="w-full" disabled={isPending}>
                 Login
               </Button>
 
-              <p className="text-center text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-center text-sm">
                 Don&apos;t have an account?{" "}
-                <Link
-                  href="/register"
-                  className="underline underline-offset-4 text-primary"
-                >
+                <Link href="/register" className="text-primary underline underline-offset-4">
                   Sign up
                 </Link>
               </p>

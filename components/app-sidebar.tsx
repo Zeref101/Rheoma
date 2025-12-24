@@ -67,7 +67,7 @@ const AppSideBar = () => {
         <SidebarMenuItem>
           <SidebarMenuButton asChild className="h-10 gap-x-4 px-4">
             <Link href={"/"} prefetch>
-              <Image src={"/logos/logo.svg"} alt="logo" width={30} height={30} />
+              <Image src={"/logos/logo.png"} alt="logo" width={30} height={30} />
               <span className="text-sm font-semibold">Rheoma</span>
             </Link>
           </SidebarMenuButton>
