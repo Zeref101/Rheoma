@@ -25,8 +25,6 @@ const Page = async ({ params }: Props) => {
             </Suspense>
           </ErrorBoundary>
         </HydrateClient>
-
-
       </div>
     </div>
   );

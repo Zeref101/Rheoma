@@ -1,4 +1,5 @@
 import { credentialsParams } from "@/features/credentials/params";
+import { executionsParams } from "@/features/executions/params";
 import { workflowsParams } from "@/features/workflows/params";
 import { type Realtime } from "@inngest/realtime";
 import { GetStepTools, Inngest } from "inngest";
@@ -16,6 +17,7 @@ export type GetManyInput = {
 
 export type WorkflowsParams = inferParserType<typeof workflowsParams>;
 export type CredentialParams = inferParserType<typeof credentialsParams>;
+export type ExecutionsParams = inferParserType<typeof executionsParams>;
 
 export type WorkflowsListProps = {
   initialParams?: WorkflowsParams;
@@ -31,7 +33,7 @@ export type EntityContainerProps = {
 export type EntityHeaderProps = {
   title: string;
   description?: string;
-  newButtonLabel: string;
+  newButtonLabel?: string;
   disabled?: boolean;
   isCreating?: boolean;
 } & (

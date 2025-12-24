@@ -13,7 +13,6 @@ import { EntityContainerProps, EntityHeaderProps } from "@/types/constants";
 import { Input } from "./ui/input";
 import {
   Empty,
-  EmptyContent,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
@@ -164,7 +163,7 @@ interface EmptyViewProp extends StateViewProp {
   onNew?: () => void;
 }
 
-export const EmptyView = ({ message, onNew }: EmptyViewProp) => {
+export const EmptyView = ({ message }: EmptyViewProp) => {
   return (
     <Empty className="bg-background border border-dashed">
       <EmptyHeader>
