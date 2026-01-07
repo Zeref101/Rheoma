@@ -32,8 +32,8 @@ export const ExecutionView = ({ executionId }: { executionId: string }) => {
 
   const duration = execution?.completedAt
     ? Math.round(
-      (new Date(execution.completedAt).getTime() - new Date(execution.startedAt).getTime()) / 1000
-    )
+        (new Date(execution.completedAt).getTime() - new Date(execution.startedAt).getTime()) / 1000
+      )
     : null;
   return (
     <Card className="shadow-none">
@@ -106,7 +106,7 @@ export const ExecutionView = ({ executionId }: { executionId: string }) => {
               </Button>
             </CollapsibleTrigger>
             <CollapsibleContent>
-              <pre className="scrollbar-hide mt-2 max-h-64 overflow-auto rounded-md border bg-destructive/10 p-3 font-mono text-xs leading-relaxed text-red-400">
+              <pre className="scrollbar-hide bg-destructive/10 mt-2 max-h-64 overflow-auto rounded-md border p-3 font-mono text-xs leading-relaxed text-red-400">
                 {execution.errorStack}
               </pre>
             </CollapsibleContent>

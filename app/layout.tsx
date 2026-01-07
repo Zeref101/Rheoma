@@ -40,13 +40,10 @@ export const metadata: Metadata = {
   ],
   creator: "Shreyas Mohanty",
   publisher: "Rheoma",
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
-  ),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
   openGraph: {
     title: "Rheoma — Workflow Automation Platform",
-    description:
-      "Design and run scalable AI-powered workflows with event-driven execution.",
+    description: "Design and run scalable AI-powered workflows with event-driven execution.",
     url: process.env.NEXT_PUBLIC_APP_URL,
     siteName: "Rheoma",
     locale: "en_US",
@@ -55,8 +52,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Rheoma — Workflow Automation Platform",
-    description:
-      "Build and orchestrate AI workflows using a node-based, event-driven system.",
+    description: "Build and orchestrate AI workflows using a node-based, event-driven system.",
   },
 };
 

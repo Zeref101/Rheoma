@@ -19,7 +19,6 @@ export function useEntitySearch<
   },
 >({ params, setParams, debounceMs = 500 }: UseEntitySearchProps<T>) {
   const [localSearch, setLocalSearch] = useState(params.search);
-  console.log(localSearch);
   useEffect(() => {
     if (localSearch === "" && params.search !== "") {
       setParams({

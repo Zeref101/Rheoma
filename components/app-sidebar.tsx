@@ -69,14 +69,14 @@ const AppSideBar = () => {
             <Link
               href="/"
               prefetch
-              className="flex h-10 items-center gap-x-4 px-4
-               hover:bg-transparent focus:bg-transparent active:bg-transparent"
+              className="flex h-10 items-center gap-x-4 px-4 hover:bg-transparent focus:bg-transparent active:bg-transparent"
             >
               <Image src="/logos/logo.svg" alt="logo" width={30} height={30} />
-              <span className="text-sm font-semibold">Rheoma</span>
+              <span className="text-sm font-semibold transition-all duration-200 group-data-[collapsible=icon]:hidden">
+                Rheoma
+              </span>
             </Link>
           </SidebarMenuItem>
-
         </SidebarMenuItem>
       </SidebarHeader>
       <SidebarContent>
