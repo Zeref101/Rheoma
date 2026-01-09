@@ -1,6 +1,6 @@
 import { NodeType } from "@/app/generated/prisma/enums";
 import { InitialNode } from "@/components/initial-node";
-import { HttpRequestNode } from "@/features/core/components/http-request/node";
+import { HttpRequestNode } from "@/features/nodes/core/components/http-request/node";
 import { AnthropicNode } from "@/features/nodes/integrations/components/anthropic/node";
 import { DiscordNode } from "@/features/nodes/integrations/components/discord/node";
 import { GeminiNode } from "@/features/nodes/integrations/components/gemini/node";
