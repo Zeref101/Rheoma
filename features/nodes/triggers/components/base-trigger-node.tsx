@@ -5,14 +5,13 @@ import type { LucideIcon } from "lucide-react";
 import Image from "next/image";
 import { memo, type ReactNode, useState } from "react";
 import { BaseNode, BaseNodeContent } from "@/components/react-flow/base-node";
-import { BaseHandle } from "../../../components/react-flow/base-handle";
-import { WorkflowNode } from "../../../components/workflow-node";
+import { BaseHandle } from "../../../../components/react-flow/base-handle";
+import { WorkflowNode } from "../../../../components/workflow-node";
 import {
-  NodeStatusIndicator,
   type NodeStatus,
+  NodeStatusIndicator,
 } from "@/components/react-flow/node-status-indicator";
-
-interface BaseExecutionNodeProps extends NodeProps {
+interface BaseTriggerNodeProps extends NodeProps {
   Icon: LucideIcon | string;
   name: string;
   description?: string;
@@ -22,7 +21,7 @@ interface BaseExecutionNodeProps extends NodeProps {
   onDoubleClick?: () => void;
 }
 
-const BaseExecutionNodeComponent = (props: BaseExecutionNodeProps) => {
+const BaseTriggerNodeComponent = (props: BaseTriggerNodeProps) => {
   const { id, Icon, name, description, children, onSetting, onDoubleClick, status } = props;
   const { setNodes, setEdges } = useReactFlow();
   const [openUtil, setOpenUtil] = useState(false);
@@ -44,11 +43,12 @@ const BaseExecutionNodeComponent = (props: BaseExecutionNodeProps) => {
       onSettings={onSetting}
       showToolbar={openUtil}
     >
-      <NodeStatusIndicator status={status}>
+      <NodeStatusIndicator status={status} variant="border" className="rounded-l-2xl">
         <BaseNode
-          onDoubleClick={onDoubleClick}
-          onClick={() => setOpenUtil(!openUtil)}
           status={status}
+          onDoubleClick={onDoubleClick}
+          className="group relative rounded-l-2xl"
+          onClick={() => setOpenUtil(!openUtil)}
         >
           <BaseNodeContent>
             {typeof Icon === "string" ? (
@@ -57,7 +57,6 @@ const BaseExecutionNodeComponent = (props: BaseExecutionNodeProps) => {
               <Icon className="text-muted-foreground size-4" />
             )}
             {children}
-            <BaseHandle id={"target-1"} type="target" position={Position.Left} />
             <BaseHandle id={"source-1"} type="source" position={Position.Right} />
           </BaseNodeContent>
         </BaseNode>
@@ -66,6 +65,6 @@ const BaseExecutionNodeComponent = (props: BaseExecutionNodeProps) => {
   );
 };
 
-BaseExecutionNodeComponent.displayName = "BaseExecutionNode";
+BaseTriggerNodeComponent.displayName = "BaseExecutionNode";
 
-export const BaseExecutionNode = memo(BaseExecutionNodeComponent);
+export const BaseTriggerNode = memo(BaseTriggerNodeComponent);

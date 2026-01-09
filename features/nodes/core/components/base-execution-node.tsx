@@ -3,15 +3,17 @@
 import { type NodeProps, Position, useReactFlow } from "@xyflow/react";
 import type { LucideIcon } from "lucide-react";
 import Image from "next/image";
-import { memo, type ReactNode, useCallback, useState } from "react";
+import { memo, type ReactNode, useState } from "react";
 import { BaseNode, BaseNodeContent } from "@/components/react-flow/base-node";
-import { BaseHandle } from "../../../components/react-flow/base-handle";
-import { WorkflowNode } from "../../../components/workflow-node";
+
 import {
-  type NodeStatus,
   NodeStatusIndicator,
+  type NodeStatus,
 } from "@/components/react-flow/node-status-indicator";
-interface BaseTriggerNodeProps extends NodeProps {
+import { WorkflowNode } from "@/components/workflow-node";
+import { BaseHandle } from "@/components/react-flow/base-handle";
+
+interface BaseExecutionNodeProps extends NodeProps {
   Icon: LucideIcon | string;
   name: string;
   description?: string;
@@ -21,7 +23,7 @@ interface BaseTriggerNodeProps extends NodeProps {
   onDoubleClick?: () => void;
 }
 
-const BaseTriggerNodeComponent = (props: BaseTriggerNodeProps) => {
+const BaseExecutionNodeComponent = (props: BaseExecutionNodeProps) => {
   const { id, Icon, name, description, children, onSetting, onDoubleClick, status } = props;
   const { setNodes, setEdges } = useReactFlow();
   const [openUtil, setOpenUtil] = useState(false);
@@ -43,12 +45,11 @@ const BaseTriggerNodeComponent = (props: BaseTriggerNodeProps) => {
       onSettings={onSetting}
       showToolbar={openUtil}
     >
-      <NodeStatusIndicator status={status} variant="border" className="rounded-l-2xl">
+      <NodeStatusIndicator status={status}>
         <BaseNode
-          status={status}
           onDoubleClick={onDoubleClick}
-          className="group relative rounded-l-2xl"
           onClick={() => setOpenUtil(!openUtil)}
+          status={status}
         >
           <BaseNodeContent>
             {typeof Icon === "string" ? (
@@ -57,6 +58,7 @@ const BaseTriggerNodeComponent = (props: BaseTriggerNodeProps) => {
               <Icon className="text-muted-foreground size-4" />
             )}
             {children}
+            <BaseHandle id={"target-1"} type="target" position={Position.Left} />
             <BaseHandle id={"source-1"} type="source" position={Position.Right} />
           </BaseNodeContent>
         </BaseNode>
@@ -65,6 +67,6 @@ const BaseTriggerNodeComponent = (props: BaseTriggerNodeProps) => {
   );
 };
 
-BaseTriggerNodeComponent.displayName = "BaseExecutionNode";
+BaseExecutionNodeComponent.displayName = "BaseExecutionNode";
 
-export const BaseTriggerNode = memo(BaseTriggerNodeComponent);
+export const BaseExecutionNode = memo(BaseExecutionNodeComponent);

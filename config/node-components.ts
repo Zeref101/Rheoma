@@ -1,15 +1,15 @@
 import { NodeType } from "@/app/generated/prisma/enums";
 import { InitialNode } from "@/components/initial-node";
 import { HttpRequestNode } from "@/features/core/components/http-request/node";
-import { AnthropicNode } from "@/features/integrations/components/anthropic/node";
-import { DiscordNode } from "@/features/integrations/components/discord/node";
-import { GeminiNode } from "@/features/integrations/components/gemini/node";
-import { OpenAiNode } from "@/features/integrations/components/openai/node";
-import { SlackNode } from "@/features/integrations/components/slack/node";
-import { GmailTriggerNode } from "@/features/triggers/components/email-trigger/node";
-import { GoogleFormTriggerNode } from "@/features/triggers/components/google-form-trigger/node";
-import { ManualTriggerNode } from "@/features/triggers/components/manual-trigger/node";
-import { StripeTriggerNode } from "@/features/triggers/components/stripe-trigger/node";
+import { AnthropicNode } from "@/features/nodes/integrations/components/anthropic/node";
+import { DiscordNode } from "@/features/nodes/integrations/components/discord/node";
+import { GeminiNode } from "@/features/nodes/integrations/components/gemini/node";
+import { OpenAiNode } from "@/features/nodes/integrations/components/openai/node";
+import { SlackNode } from "@/features/nodes/integrations/components/slack/node";
+import { GmailTriggerNode } from "@/features/nodes/triggers/components/email-trigger/node";
+import { GoogleFormTriggerNode } from "@/features/nodes/triggers/components/google-form-trigger/node";
+import { ManualTriggerNode } from "@/features/nodes/triggers/components/manual-trigger/node";
+import { StripeTriggerNode } from "@/features/nodes/triggers/components/stripe-trigger/node";
 import { NodeTypes } from "@xyflow/react";
 
 export const nodeComponents = {

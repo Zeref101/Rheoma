@@ -3,7 +3,7 @@ import { BaseTriggerNode } from "../base-trigger-node";
 import { MousePointerIcon } from "lucide-react";
 import { memo, useState } from "react";
 import { ManualTriggerDialog } from "./dialog";
-import { useNodeStatus } from "@/features/integrations/hooks/use-node-status";
+import { useNodeStatus } from "@/features/nodes/integrations/hooks/use-node-status";
 import { MANNUAL_TRIGGER_CHANNEL_NAME } from "@/inngest/channels/manual-trigger";
 import { fetchManualTriggerRealtimeToken } from "./actions";
 

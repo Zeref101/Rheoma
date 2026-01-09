@@ -3,7 +3,6 @@ import { inngest } from "./client";
 import prisma from "@/lib/db";
 import { topologicalSort } from "./util/utils";
 import { ExecutionStatus, NodeType } from "@/app/generated/prisma/enums";
-import { getExecutor } from "@/features/integrations/lib/executor-registry";
 import { httpRequestChannel } from "./channels/http-request";
 import { manualTriggerChannel } from "./channels/manual-trigger";
 import { googleFormTriggerChannel } from "./channels/google-form-trigger";
@@ -13,6 +12,7 @@ import { openAiChannel } from "./channels/openai";
 import { anthropicChannel } from "./channels/anthropic";
 import { discordChannel } from "./channels/discord";
 import { slackChannel } from "./channels/slack";
+import { getExecutor } from "@/features/nodes/workflow-engine/executor-registry";
 
 export const executeWorkflow = inngest.createFunction(
   {

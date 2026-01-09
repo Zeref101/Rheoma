@@ -1,7 +1,7 @@
 import { NodeProps } from "@xyflow/react";
 import { BaseTriggerNode } from "../base-trigger-node";
 import { memo, useState } from "react";
-import { useNodeStatus } from "@/features/integrations/hooks/use-node-status";
+import { useNodeStatus } from "@/features/nodes/integrations/hooks/use-node-status";
 import { GmailTriggerDialog } from "./dialog";
 import { fetchGmailTriggerRealtimeToken } from "./actions";
 import { GMAIL_TRIGGER_CHANNEL_NAME } from "@/inngest/channels/gmail-trigger";

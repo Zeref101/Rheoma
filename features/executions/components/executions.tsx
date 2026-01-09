@@ -1,5 +1,4 @@
 "use client";
-import { useSuspenseExecutions } from "@/features/integrations/hooks/use-executions";
 import React from "react";
 import {
   EmptyView,
@@ -12,10 +11,11 @@ import {
   LoadingView,
 } from "@/components/entity-components";
 import { formatDistanceToNow } from "date-fns";
-import { useExecutionsParams } from "../hooks/use-executions-params";
 
 import { Execution, ExecutionStatus } from "@/app/generated/prisma/browser";
 import { CheckCircle2Icon, ClockIcon, Loader2Icon, XCircleIcon } from "lucide-react";
+import { useExecutionsParams } from "../hooks/use-executions-params";
+import { useSuspenseExecutions } from "../hooks/use-executions";
 
 export const ExecutionsList = () => {
   const executions = useSuspenseExecutions();

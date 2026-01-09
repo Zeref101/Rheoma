@@ -2,7 +2,7 @@
 
 import { NodeToolbar, Position } from "@xyflow/react";
 import { SettingsIcon, TrashIcon } from "lucide-react";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { Button } from "./ui/button";
 
 interface WorkflowNodeProps {
