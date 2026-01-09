@@ -43,6 +43,7 @@ export function useEntitySearch<
   }, [localSearch, params.search, debounceMs, params, setParams]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLocalSearch(params.search);
   }, [params.search]);
 
