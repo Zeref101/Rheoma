@@ -16,7 +16,9 @@
     "dev:all": "mprocs",
     "mprocs": "mprocs",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
+    "check": "pnpm lint && pnpm typecheck && pnpm build"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^2.0.56",
