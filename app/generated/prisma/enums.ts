@@ -18,6 +18,7 @@ export const NodeType = {
   OPENAI: "OPENAI",
   DISCORD: "DISCORD",
   SLACK: "SLACK",
+  EMAIL_TRIGGER: "EMAIL_TRIGGER",
 } as const;
 
 export type NodeType = (typeof NodeType)[keyof typeof NodeType];

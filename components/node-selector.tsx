@@ -33,40 +33,44 @@ const triggerNodes: NodeTypeOption[] = [
   {
     type: NodeType.GOOGLE_FORM_TRIGGER,
     label: "Google Form",
-    description: "Runs the flow on when a Google form is submitted",
+    description: "Runs the flow when a Google form is submitted",
     icon: "/logos/googleform.svg",
   },
-  // {
-  //   type: NodeType.STRIPE_TRIGGER,
-  //   label: "Stripe Event",
-  //   description: "Runs the flow on when a Stripe event is captured",
-  //   icon: "/logos/stripe.svg",
-  // },
+  {
+    type: NodeType.EMAIL_TRIGGER,
+    label: "Gmail",
+    description: "Runs the flow when an email event is captured",
+    icon: "/logos/gmail.png",
+  },
 ];
 
-const executionNode: NodeTypeOption[] = [
+const coreNodes: NodeTypeOption[] = [
   {
     type: NodeType.HTTP_REQUEST,
     label: "HTTP Request",
-    description: "Makes an HTTP request",
+    description: "Make a request to any API",
     icon: GlobeIcon,
   },
+  // later: Set, Code, Date, etc
+];
+
+const integrationNodes: NodeTypeOption[] = [
   {
     type: NodeType.GEMINI,
     label: "Gemini",
-    description: "Uses Google Gemini to generate text",
+    description: "Generate text with Google Gemini",
     icon: "/logos/gemini.svg",
   },
   {
     type: NodeType.OPENAI,
     label: "OpenAI",
-    description: "Uses OpenAI models to generate text",
+    description: "Generate text with OpenAI models",
     icon: "/logos/openai.svg",
   },
   {
     type: NodeType.ANTHROPIC,
     label: "Anthropic",
-    description: "Uses Anthropic models to generate text",
+    description: "Generate text with Anthropic models",
     icon: "/logos/anthropic.svg",
   },
   {
@@ -82,6 +86,14 @@ const executionNode: NodeTypeOption[] = [
     icon: "/logos/slack.svg",
   },
 ];
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="mt-2">
+      <h4 className="text-muted-foreground mb-2 px-4 text-xs font-semibold uppercase">{title}</h4>
+      <div>{children}</div>
+    </div>
+  );
+}
 
 interface NodeSelectorProps {
   open: boolean;
@@ -130,22 +142,30 @@ export function NodeSelector({ open, onOpenChange, children }: NodeSelectorProps
       <SheetTrigger asChild>{children}</SheetTrigger>
       <SheetContent side="right" className="w-full overflow-y-auto sm:max-w-md">
         <SheetHeader>
-          <SheetTitle>What triggers this workflow?</SheetTitle>
-          <SheetDescription>A trigger is a step that starts your workflow.</SheetDescription>
+          <SheetTitle>Add a node</SheetTitle>
+          <SheetDescription>Choose a trigger, logic step, or integration.</SheetDescription>
         </SheetHeader>
-        <div>
+        <Section title="Triggers">
           {triggerNodes.map((node) => (
             <NodeTypeRow key={node.type} option={node} onSelect={handleNodeSelect} />
           ))}
-        </div>
+        </Section>
 
         <Separator />
 
-        <div>
-          {executionNode.map((node) => (
+        <Section title="Integrations">
+          {integrationNodes.map((node) => (
             <NodeTypeRow key={node.type} option={node} onSelect={handleNodeSelect} />
           ))}
-        </div>
+        </Section>
+
+        <Separator />
+
+        <Section title="Core">
+          {coreNodes.map((node) => (
+            <NodeTypeRow key={node.type} option={node} onSelect={handleNodeSelect} />
+          ))}
+        </Section>
       </SheetContent>
     </Sheet>
   );

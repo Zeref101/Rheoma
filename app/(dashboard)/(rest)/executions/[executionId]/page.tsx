@@ -1,6 +1,6 @@
 import { HydrateClient } from "@/app/trpc/routers/server";
-import { ExecutionView } from "@/features/executions/components/execution";
-import { ExecutionsError, ExecutionsLoading } from "@/features/executions/components/executions";
+import { ExecutionView } from "@/features/integrations/components/execution";
+import { ExecutionsError, ExecutionsLoading } from "@/features/integrations/components/executions";
 import { requireAuth } from "@/lib/auth-utils";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";

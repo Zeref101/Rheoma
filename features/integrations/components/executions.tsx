@@ -1,5 +1,5 @@
 "use client";
-import { useSuspenseExecutions } from "@/features/executions/hooks/use-executions";
+import { useSuspenseExecutions } from "@/features/integrations/hooks/use-executions";
 import React from "react";
 import {
   EmptyView,

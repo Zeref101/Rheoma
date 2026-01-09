@@ -46,6 +46,7 @@ export const geminiExecution: NodeExecutor<GeminiData> = async ({
     throw new NonRetriableError("Gemini node: Credential is missing");
   }
   try {
+    console.log(context);
     const systemPrompt = data.systemPrompt
       ? Handlebars.compile(data.systemPrompt)(context)
       : "You are a helpful assistent";

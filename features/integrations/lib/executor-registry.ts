@@ -1,13 +1,14 @@
 import { NodeType } from "@/app/generated/prisma/enums";
 import { manualTriggerExecution } from "@/features/triggers/components/manual-trigger/executor";
 import { NodeExecutor } from "@/types/constants";
-import { httpRequestExecution } from "../components/http-request/executor";
 import { googleFormTriggerExecution } from "@/features/triggers/components/google-form-trigger/executor";
 import { geminiExecution } from "../components/gemini/executor";
 import { openAiExecution } from "../components/openai/executor";
 import { anthropicExecution } from "../components/anthropic/executor";
 import { discordExecution } from "../components/discord/executor";
 import { slackExecution } from "../components/slack/executor";
+import { httpRequestExecution } from "@/features/core/components/http-request/executor";
+import { gmailTriggerExecution } from "@/features/triggers/components/email-trigger/executor";
 
 export const executorRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.MANUAL_TRIGGER]: manualTriggerExecution,
@@ -20,6 +21,7 @@ export const executorRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.OPENAI]: openAiExecution,
   [NodeType.DISCORD]: discordExecution,
   [NodeType.SLACK]: slackExecution,
+  [NodeType.EMAIL_TRIGGER]: gmailTriggerExecution,
 };
 
 export const getExecutor = (type: NodeType): NodeExecutor => {

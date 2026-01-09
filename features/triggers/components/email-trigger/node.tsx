@@ -1,29 +1,29 @@
 import { NodeProps } from "@xyflow/react";
 import { BaseTriggerNode } from "../base-trigger-node";
-import { MousePointerIcon } from "lucide-react";
 import { memo, useState } from "react";
-import { ManualTriggerDialog } from "./dialog";
 import { useNodeStatus } from "@/features/integrations/hooks/use-node-status";
-import { MANNUAL_TRIGGER_CHANNEL_NAME } from "@/inngest/channels/manual-trigger";
-import { fetchManualTriggerRealtimeToken } from "./actions";
+import { GmailTriggerDialog } from "./dialog";
+import { fetchGmailTriggerRealtimeToken } from "./actions";
+import { GMAIL_TRIGGER_CHANNEL_NAME } from "@/inngest/channels/gmail-trigger";
 
-export const ManualTriggerNode = memo((props: NodeProps) => {
+export const GmailTriggerNode = memo((props: NodeProps) => {
   const nodeStatus = useNodeStatus({
     nodeId: props.id,
-    channel: MANNUAL_TRIGGER_CHANNEL_NAME,
+    channel: GMAIL_TRIGGER_CHANNEL_NAME,
     topic: "status",
-    refreshToken: fetchManualTriggerRealtimeToken,
+    refreshToken: fetchGmailTriggerRealtimeToken,
   });
   const [dialogOpen, setDialogOpen] = useState(false);
   const handleOnSetting = () => setDialogOpen(!dialogOpen);
 
   return (
     <>
-      <ManualTriggerDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+      <GmailTriggerDialog open={dialogOpen} onOpenChange={setDialogOpen} />
       <BaseTriggerNode
         {...props}
-        Icon={MousePointerIcon}
-        name="When clicking 'Execute workflow'"
+        Icon={"/logos/gmail.png"}
+        name="Gmail"
+        description="When an email is captured"
         status={nodeStatus}
         onSetting={handleOnSetting}
         onDoubleClick={handleOnSetting}
@@ -32,4 +32,4 @@ export const ManualTriggerNode = memo((props: NodeProps) => {
   );
 });
 
-ManualTriggerNode.displayName = "ManualTriggerNode";
+GmailTriggerNode.displayName = "GmailTriggerNode";

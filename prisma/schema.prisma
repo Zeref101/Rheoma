@@ -96,6 +96,7 @@ enum NodeType {
   OPENAI
   DISCORD
   SLACK
+  EMAIL_TRIGGER
 }
 
 enum CredentialType {
