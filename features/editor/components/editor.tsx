@@ -26,7 +26,7 @@ import { NodeType } from "@/app/generated/prisma/enums";
 import { ExecuteWorkflowButton } from "./execute-workflow-button";
 
 export const EditorLoading = () => {
-  return <LoadingView message="Loading editor..." />;
+  return <LoadingView message="editor..." />;
 };
 
 export const EditorError = () => {
@@ -75,11 +75,11 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
         panOnScroll
         fitView
 
-        // proOptions={
-        //   {
-        //     hideAttribution: true
-        //   }
-        // }
+      // proOptions={
+      //   {
+      //     hideAttribution: true
+      //   }
+      // }
       >
         <Background />
         <Controls />

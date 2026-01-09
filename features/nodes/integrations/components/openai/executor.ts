@@ -95,7 +95,7 @@ export const openAiExecution: NodeExecutor<OpenAiData> = async ({
 
     const text = steps[0].content[0].type === "text" ? steps[0].content[0].text : "";
 
-    const variableKey = data.variableName ?? "aiResponse";
+    const variableKey = data.variableName ?? "response";
 
     await publish(
       openAiChannel().status({
@@ -106,7 +106,7 @@ export const openAiExecution: NodeExecutor<OpenAiData> = async ({
     return {
       ...context,
       [variableKey]: {
-        aiResponse: text,
+        response: text,
       },
     };
   } catch (error) {
