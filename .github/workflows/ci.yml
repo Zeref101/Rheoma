@@ -23,10 +23,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
 
+      # ✅ THIS MUST COME BEFORE pnpm IS USED OR CACHED
       - name: Enable Corepack
         run: corepack enable
+
+      # ✅ Explicitly activate pnpm (important)
+      - name: Prepare pnpm
+        run: corepack prepare pnpm@latest --activate
+
+      # ✅ Now caching works
+      - name: Setup pnpm cache
+        uses: actions/setup-node@v4
+        with:
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
