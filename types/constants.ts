@@ -1,5 +1,5 @@
 import { credentialsParams } from "@/features/credentials/params";
-import { executionsParams } from "@/features/integrations/params";
+import { executionsParams } from "@/features/executions/params";
 import { workflowsParams } from "@/features/workflows/params";
 import { type Realtime } from "@inngest/realtime";
 import { GetStepTools, Inngest } from "inngest";
