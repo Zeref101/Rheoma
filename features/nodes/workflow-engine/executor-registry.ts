@@ -22,6 +22,7 @@ export const executorRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.DISCORD]: discordExecution,
   [NodeType.SLACK]: slackExecution,
   [NodeType.EMAIL_TRIGGER]: gmailTriggerExecution,
+  [NodeType.HTML_EXTRACTOR]: httpRequestExecution,
 };
 
 export const getExecutor = (type: NodeType): NodeExecutor => {
