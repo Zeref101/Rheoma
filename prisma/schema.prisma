@@ -97,6 +97,7 @@ enum NodeType {
   DISCORD
   SLACK
   EMAIL_TRIGGER
+  HTML_EXTRACTOR
 }
 
 enum CredentialType {

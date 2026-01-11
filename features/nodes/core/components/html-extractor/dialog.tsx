@@ -1,0 +1,210 @@
+"use client";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormField,
+  FormDescription,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, useWatch } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
+
+interface Props {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSubmit: (values: z.infer<typeof formSchema>) => void;
+  defaultValues?: Partial<HtmlExtractorFormValues>;
+}
+
+const formSchema = z.object({
+  variableName: z
+    .string()
+    .min(1, { message: "variable name is required" })
+    .regex(/^[A-Za-z_$][A-Za-z0-9_$]*$/, {
+      message:
+        "Variable name must start with a letter or underscore and contains only letters, number and underscores",
+    }),
+  endpoint: z.string({ message: "Please enter a valid URL" }),
+  method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
+  body: z.string().optional(),
+});
+
+export type HtmlExtractorFormValues = z.infer<typeof formSchema>;
+
+export const HtmlExtractorDialog = ({ open, onOpenChange, onSubmit, defaultValues }: Props) => {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      variableName: defaultValues?.variableName || "",
+      endpoint: defaultValues?.endpoint,
+      method: defaultValues?.method,
+      body: defaultValues?.body,
+    },
+  });
+
+  const watchMethod = useWatch({
+    control: form.control,
+    name: "method",
+  });
+  const watchVariableName =
+    useWatch({
+      control: form.control,
+      name: "variableName",
+    }) || "myApiCall";
+
+  const showBodyField = ["POST", "PUT", "PATCH"].includes(watchMethod);
+
+  const handleSubmit = (values: z.infer<typeof formSchema>) => {
+    onSubmit(values);
+    onOpenChange(false);
+  };
+
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        variableName: defaultValues?.variableName || "",
+        endpoint: defaultValues?.endpoint,
+        method: defaultValues?.method,
+        body: defaultValues?.body,
+      });
+    }
+  }, [
+    defaultValues?.body,
+    defaultValues?.endpoint,
+    defaultValues?.method,
+    form,
+    open,
+    defaultValues?.variableName,
+  ]);
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>HTTP Request</DialogTitle>
+          <DialogDescription>Configure settings for the HTTP Request node.</DialogDescription>
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="mt-4 space-y-8">
+            <FormField
+              control={form.control}
+              name="variableName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Variable Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="myApiCall" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Use this name to reference the result in other nodes:{" "}
+                    {`{{${watchVariableName}.data}}`}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="method"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Method</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a method" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="GET">GET</SelectItem>
+                      <SelectItem value="POST">POST</SelectItem>
+                      <SelectItem value="PUT">PUT</SelectItem>
+                      <SelectItem value="PATCH">PATCH</SelectItem>
+                      <SelectItem value="DELETE">DELETE</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    Choose the HTTP method that will be used when sending the request.
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="endpoint"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Endpoint URL</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="`https://fake-json-api.mock.beeceptor.com/users{{httpResponse.data.id}}`"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Static URL or use {"{{variabless}}"} for simple values or {"{{json variable}}"}{" "}
+                    to stringify objects
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {showBodyField && (
+              <FormField
+                control={form.control}
+                name="body"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Request Body</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder={
+                          '{\n  "userId": "{{httpResponse.data.id}}",\n  "name": "{{httpResponse.data.name}}",\n  "email": "{{httpResponse.data.email}}"\n}'
+                        }
+                        className="min-h-[120px] font-mono text-sm"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      JSON payload with static values and dynamic variables from previous steps.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            <DialogFooter className="mt-4">
+              <Button type="submit" className="w-full">
+                Save
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+};

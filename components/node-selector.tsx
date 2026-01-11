@@ -51,7 +51,12 @@ const coreNodes: NodeTypeOption[] = [
     description: "Make a request to any API",
     icon: GlobeIcon,
   },
-  // later: Set, Code, Date, etc
+  {
+    type: NodeType.HTML_EXTRACTOR,
+    label: "HTML Extractor",
+    description: "Extract structured data from HTML",
+    icon: "/logos/html.png",
+  },
 ];
 
 const integrationNodes: NodeTypeOption[] = [
