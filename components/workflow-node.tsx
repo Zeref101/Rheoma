@@ -16,25 +16,21 @@ interface WorkflowNodeProps {
 
 export function WorkflowNode({
   children,
-  showToolbar,
   onDelete,
   onSettings,
   name,
   description,
 }: WorkflowNodeProps) {
-  // const [hovered, setHovered] = useState(false);
   return (
     <div>
-      {showToolbar && (
-        <NodeToolbar>
-          <Button size="sm" variant="ghost" onClick={onSettings}>
-            <SettingsIcon className="size-4" />
-          </Button>
-          <Button size="sm" variant="ghost" onClick={onDelete}>
-            <TrashIcon className="size-4" />
-          </Button>
-        </NodeToolbar>
-      )}
+      <NodeToolbar>
+        <Button size="sm" variant="ghost" onClick={onSettings}>
+          <SettingsIcon className="size-4" />
+        </Button>
+        <Button size="sm" variant="ghost" onClick={onDelete}>
+          <TrashIcon className="size-4" />
+        </Button>
+      </NodeToolbar>
 
       {children}
 

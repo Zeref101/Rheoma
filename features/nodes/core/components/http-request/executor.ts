@@ -29,8 +29,6 @@ export const httpRequestExecution: NodeExecutor<HttpRequestData> = async ({
       publish,
       channel: httpRequestChannel(),
       run: async () => {
-        console.log(data);
-        console.log("context: " + JSON.stringify(context));
         const endpoint = Handlebars.compile(data.endpoint)(context);
         if (!endpoint) {
           throw new NonRetriableError("Endpoint is required for HTTP request");

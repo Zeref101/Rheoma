@@ -19,6 +19,7 @@ export const NodeType = {
   DISCORD: "DISCORD",
   SLACK: "SLACK",
   EMAIL_TRIGGER: "EMAIL_TRIGGER",
+  HTML_EXTRACTOR: "HTML_EXTRACTOR",
 } as const;
 
 export type NodeType = (typeof NodeType)[keyof typeof NodeType];
