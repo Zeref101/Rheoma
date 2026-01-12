@@ -44,10 +44,7 @@ const BaseExecutionNodeComponent = (props: BaseExecutionNodeProps) => {
       onSettings={onSetting}
     >
       <NodeStatusIndicator status={status}>
-        <BaseNode
-          onDoubleClick={onDoubleClick}
-          status={status}
-        >
+        <BaseNode onDoubleClick={onDoubleClick} status={status}>
           <BaseNodeContent>
             {typeof Icon === "string" ? (
               <Image src={Icon} alt={name} width={16} height={16} />

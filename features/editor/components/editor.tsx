@@ -75,11 +75,11 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
         panOnScroll
         fitView
 
-      // proOptions={
-      //   {
-      //     hideAttribution: true
-      //   }
-      // }
+        // proOptions={
+        //   {
+        //     hideAttribution: true
+        //   }
+        // }
       >
         <Background />
         <Controls />

@@ -80,8 +80,7 @@ export const HtmlExtractorDialog = ({ open, onOpenChange, onSubmit, defaultValue
           returnArray: true,
         },
       ],
-    }
-
+    },
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -109,16 +108,15 @@ export const HtmlExtractorDialog = ({ open, onOpenChange, onSubmit, defaultValue
       form.reset({
         variableName: defaultValues?.variableName || "",
         sourceHtml: defaultValues?.sourceHtml || "",
-        extractions:
-          defaultValues?.extractions || [
-            {
-              key: "",
-              selector: "",
-              returnValue: "text",
-              skipSelectors: "",
-              returnArray: true,
-            },
-          ],
+        extractions: defaultValues?.extractions || [
+          {
+            key: "",
+            selector: "",
+            returnValue: "text",
+            skipSelectors: "",
+            returnArray: true,
+          },
+        ],
       });
     }
   }, [open, defaultValues, form]);
@@ -135,7 +133,6 @@ export const HtmlExtractorDialog = ({ open, onOpenChange, onSubmit, defaultValue
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-
             {/* Variable Name */}
             <FormField
               control={form.control}
@@ -180,10 +177,7 @@ export const HtmlExtractorDialog = ({ open, onOpenChange, onSubmit, defaultValue
                 const returnValue = watchedExtractions?.[index]?.returnValue;
 
                 return (
-                  <div
-                    key={item.id}
-                    className="rounded-md border p-4 space-y-4"
-                  >
+                  <div key={item.id} className="space-y-4 rounded-md border p-4">
                     {/* Key */}
                     <FormField
                       control={form.control}
@@ -265,18 +259,13 @@ export const HtmlExtractorDialog = ({ open, onOpenChange, onSubmit, defaultValue
                       )}
                     />
 
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      onClick={() => remove(index)}
-                    >
+                    <Button type="button" variant="destructive" onClick={() => remove(index)}>
                       Remove Extraction
                     </Button>
                   </div>
                 );
               })}
             </div>
-
 
             <Button
               type="button"

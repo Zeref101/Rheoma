@@ -19,8 +19,8 @@ type HtmlExtraction = {
 type HtmlExtractorNodeData = {
   variableName?: string;
   sourceHtml?: string;
-  extractions?: HtmlExtraction[]
-}
+  extractions?: HtmlExtraction[];
+};
 
 type HtmlExtractorNodeType = Node<HtmlExtractorNodeData>;
 
@@ -35,15 +35,11 @@ export const HtmlExtractorNode = memo((props: NodeProps<HtmlExtractorNodeType>) 
   const nodeData = props.data;
   const extractions = nodeData.extractions ?? [];
 
-  const isConfigured =
-    extractions.length > 0 &&
-    extractions.some((e) => e.key && e.selector);
+  const isConfigured = extractions.length > 0 && extractions.some((e) => e.key && e.selector);
 
   const description = isConfigured
-    ? `Extract ${extractions.length} field${extractions.length > 1 ? "s" : ""
-    }`
+    ? `Extract ${extractions.length} field${extractions.length > 1 ? "s" : ""}`
     : "Not Configured";
-
 
   const { setNodes } = useReactFlow();
 
@@ -76,7 +72,7 @@ export const HtmlExtractorNode = memo((props: NodeProps<HtmlExtractorNodeType>) 
       <BaseExecutionNode
         {...props}
         id={props.id}
-        Icon={'/logos/html.png'}
+        Icon={"/logos/html.png"}
         name="HTML Extractor"
         description={description}
         onSetting={handleOnSetting}
