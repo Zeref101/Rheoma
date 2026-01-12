@@ -1,7 +1,3 @@
-Here’s a clean, beginner-friendly **README.md** you can directly use for your project:
-
----
-
 # Workflow Automation Platform
 
 A modern **workflow automation platform** inspired by tools like n8n, built to design, execute, and manage automated workflows.
