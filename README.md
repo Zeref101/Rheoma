@@ -1,8 +1,8 @@
----
 # Workflow Automation Platform
 
 A modern **workflow automation platform** inspired by tools like n8n, built to design, execute, and manage automated workflows.
 This project focuses on **event-driven background jobs**, **scalable workflow execution**, and a **type-safe API layer**.
+
 ---
 
 ## 🚀 Tech Stack
