@@ -4,30 +4,47 @@ import { memo, useState } from "react";
 import { BaseExecutionNode } from "../base-execution-node";
 import { HtmlExtractorDialog, HtmlExtractorFormValues } from "./dialog";
 import { useNodeStatus } from "../../hooks/use-node-status";
-import { httpRequestChannel } from "@/inngest/channels/http-request";
-import { fetchHttpRequestRealtimeToken } from "./actions";
+import { fetchHtmlExtractorRealtimeToken } from "./actions";
+import { HtmlExtractorChannel } from "@/inngest/channels/html-extractor";
 
-type HttpRequestNodeData = {
-  variableName?: string;
-  endpoint?: string;
-  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-  body?: string;
+type HtmlExtraction = {
+  key: string;
+  selector: string;
+  returnValue: "text" | "html" | "attribute";
+  attribute?: string;
+  skipSelectors?: string;
+  returnArray: boolean;
 };
 
-type HttpRequestNodeType = Node<HttpRequestNodeData>;
+type HtmlExtractorNodeData = {
+  variableName?: string;
+  sourceHtml?: string;
+  extractions?: HtmlExtraction[]
+}
 
-export const HtmlExtractorNode = memo((props: NodeProps<HttpRequestNodeType>) => {
+type HtmlExtractorNodeType = Node<HtmlExtractorNodeData>;
+
+export const HtmlExtractorNode = memo((props: NodeProps<HtmlExtractorNodeType>) => {
   const nodeStatus = useNodeStatus({
     nodeId: props.id,
-    channel: httpRequestChannel().name,
+    channel: HtmlExtractorChannel().name,
     topic: "status",
-    refreshToken: fetchHttpRequestRealtimeToken,
+    refreshToken: fetchHtmlExtractorRealtimeToken,
   });
   const [dialogOpen, setDialogOpen] = useState(false);
   const nodeData = props.data;
-  const description = nodeData?.endpoint
-    ? `${nodeData.method || "GET"}: ${nodeData.endpoint}`
-    : `Not Configured`;
+  const extractions = nodeData.extractions ?? [];
+
+  const isConfigured =
+    extractions.length > 0 &&
+    extractions.some((e) => e.key && e.selector);
+
+  const description = isConfigured
+    ? `Extract ${extractions.length} field${extractions.length > 1 ? "s" : ""
+    }`
+    : "Not Configured";
+
+
   const { setNodes } = useReactFlow();
 
   const handleOnSetting = () => setDialogOpen(!dialogOpen);

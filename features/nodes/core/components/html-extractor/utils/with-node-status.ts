@@ -1,10 +1,10 @@
-import { httpRequestChannel } from "@/inngest/channels/http-request";
+import { HtmlExtractorChannel } from "@/inngest/channels/html-extractor";
 import { Realtime } from "@inngest/realtime";
 
 type WithNodeStatusArgs<T> = {
   nodeId: string;
   publish: Realtime.PublishFn;
-  channel: ReturnType<typeof httpRequestChannel>;
+  channel: ReturnType<typeof HtmlExtractorChannel>;
   run: () => Promise<T>;
 };
 

@@ -9,6 +9,7 @@ import { anthropicExecution } from "@/features/nodes/integrations/components/ant
 import { openAiExecution } from "@/features/nodes/integrations/components/openai/executor";
 import { discordExecution } from "@/features/nodes/integrations/components/discord/executor";
 import { slackExecution } from "@/features/nodes/integrations/components/slack/executor";
+import { htmlExtractorExecution } from "../core/components/html-extractor/executor";
 
 export const executorRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.MANUAL_TRIGGER]: manualTriggerExecution,
@@ -22,7 +23,7 @@ export const executorRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.DISCORD]: discordExecution,
   [NodeType.SLACK]: slackExecution,
   [NodeType.EMAIL_TRIGGER]: gmailTriggerExecution,
-  [NodeType.HTML_EXTRACTOR]: httpRequestExecution,
+  [NodeType.HTML_EXTRACTOR]: htmlExtractorExecution,
 };
 
 export const getExecutor = (type: NodeType): NodeExecutor => {

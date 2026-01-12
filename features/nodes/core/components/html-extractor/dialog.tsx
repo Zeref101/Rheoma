@@ -29,7 +29,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 
@@ -40,19 +40,29 @@ interface Props {
   defaultValues?: Partial<HtmlExtractorFormValues>;
 }
 
+const extractionSchema = z.object({
+  key: z
+    .string()
+    .min(1, "Key is required")
+    .regex(/^[A-Za-z_$][A-Za-z0-9_$]*$/, "Invalid variable name"),
+  selector: z.string().min(1, "CSS selector is required"),
+  returnValue: z.enum(["text", "html", "attribute"]),
+  attribute: z.string().optional(),
+  skipSelectors: z.string().optional(),
+  returnArray: z.boolean(),
+});
+
 const formSchema = z.object({
   variableName: z
     .string()
-    .min(1, { message: "variable name is required" })
+    .min(1, { message: "Variable name is required" })
     .regex(/^[A-Za-z_$][A-Za-z0-9_$]*$/, {
       message:
-        "Variable name must start with a letter or underscore and contains only letters, number and underscores",
+        "Variable name must start with a letter or underscore and contain only letters, numbers, and underscores",
     }),
-  endpoint: z.string({ message: "Please enter a valid URL" }),
-  method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
-  body: z.string().optional(),
+  sourceHtml: z.string().optional(),
+  extractions: z.array(extractionSchema).min(1, "Add at least one extraction field"),
 });
-
 export type HtmlExtractorFormValues = z.infer<typeof formSchema>;
 
 export const HtmlExtractorDialog = ({ open, onOpenChange, onSubmit, defaultValues }: Props) => {
@@ -60,25 +70,36 @@ export const HtmlExtractorDialog = ({ open, onOpenChange, onSubmit, defaultValue
     resolver: zodResolver(formSchema),
     defaultValues: {
       variableName: defaultValues?.variableName || "",
-      endpoint: defaultValues?.endpoint,
-      method: defaultValues?.method,
-      body: defaultValues?.body,
-    },
+      sourceHtml: defaultValues?.sourceHtml || "",
+      extractions: defaultValues?.extractions || [
+        {
+          key: "",
+          selector: "",
+          returnValue: "text",
+          skipSelectors: "",
+          returnArray: true,
+        },
+      ],
+    }
+
   });
 
-  const watchMethod = useWatch({
+  const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "method",
+    name: "extractions",
   });
+
   const watchVariableName =
     useWatch({
       control: form.control,
       name: "variableName",
-    }) || "myApiCall";
+    }) || "htmlData";
+  const watchedExtractions = useWatch({
+    control: form.control,
+    name: "extractions",
+  });
 
-  const showBodyField = ["POST", "PUT", "PATCH"].includes(watchMethod);
-
-  const handleSubmit = (values: z.infer<typeof formSchema>) => {
+  const handleSubmit = (values: HtmlExtractorFormValues) => {
     onSubmit(values);
     onOpenChange(false);
   };
@@ -87,29 +108,35 @@ export const HtmlExtractorDialog = ({ open, onOpenChange, onSubmit, defaultValue
     if (open) {
       form.reset({
         variableName: defaultValues?.variableName || "",
-        endpoint: defaultValues?.endpoint,
-        method: defaultValues?.method,
-        body: defaultValues?.body,
+        sourceHtml: defaultValues?.sourceHtml || "",
+        extractions:
+          defaultValues?.extractions || [
+            {
+              key: "",
+              selector: "",
+              returnValue: "text",
+              skipSelectors: "",
+              returnArray: true,
+            },
+          ],
       });
     }
-  }, [
-    defaultValues?.body,
-    defaultValues?.endpoint,
-    defaultValues?.method,
-    form,
-    open,
-    defaultValues?.variableName,
-  ]);
+  }, [open, defaultValues, form]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>HTTP Request</DialogTitle>
-          <DialogDescription>Configure settings for the HTTP Request node.</DialogDescription>
+          <DialogTitle>HTML Extractor</DialogTitle>
+          <DialogDescription>
+            Extract structured data from HTML using CSS selectors.
+          </DialogDescription>
         </DialogHeader>
+
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="mt-4 space-y-8">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+
+            {/* Variable Name */}
             <FormField
               control={form.control}
               name="variableName"
@@ -117,87 +144,157 @@ export const HtmlExtractorDialog = ({ open, onOpenChange, onSubmit, defaultValue
                 <FormItem>
                   <FormLabel>Variable Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="myApiCall" {...field} />
+                    <Input placeholder="htmlData" {...field} />
                   </FormControl>
                   <FormDescription>
-                    Use this name to reference the result in other nodes:{" "}
-                    {`{{${watchVariableName}.data}}`}
+                    Reference this data as <code>{`{{${watchVariableName}}}`}</code>
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            {/* Source HTML */}
             <FormField
               control={form.control}
-              name="method"
+              name="sourceHtml"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Method</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a method" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="GET">GET</SelectItem>
-                      <SelectItem value="POST">POST</SelectItem>
-                      <SelectItem value="PUT">PUT</SelectItem>
-                      <SelectItem value="PATCH">PATCH</SelectItem>
-                      <SelectItem value="DELETE">DELETE</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>
-                    Choose the HTTP method that will be used when sending the request.
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="endpoint"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Endpoint URL</FormLabel>
+                  <FormLabel>HTML Source</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="`https://fake-json-api.mock.beeceptor.com/users{{httpResponse.data.id}}`"
+                    <Textarea
+                      className="min-h-[120px] font-mono text-sm"
+                      placeholder="To use previous node output use {{variableName}} or paste the html here"
                       {...field}
                     />
                   </FormControl>
                   <FormDescription>
-                    Static URL or use {"{{variabless}}"} for simple values or {"{{json variable}}"}{" "}
-                    to stringify objects
+                    Paste HTML here or leave empty to extract from upstream data.
                   </FormDescription>
-                  <FormMessage />
                 </FormItem>
               )}
             />
-            {showBodyField && (
-              <FormField
-                control={form.control}
-                name="body"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Request Body</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder={
-                          '{\n  "userId": "{{httpResponse.data.id}}",\n  "name": "{{httpResponse.data.name}}",\n  "email": "{{httpResponse.data.email}}"\n}'
-                        }
-                        className="min-h-[120px] font-mono text-sm"
-                        {...field}
+
+            <div className="space-y-4">
+              {fields.map((item, index) => {
+                const returnValue = watchedExtractions?.[index]?.returnValue;
+
+                return (
+                  <div
+                    key={item.id}
+                    className="rounded-md border p-4 space-y-4"
+                  >
+                    {/* Key */}
+                    <FormField
+                      control={form.control}
+                      name={`extractions.${index}.key`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Key</FormLabel>
+                          <FormControl>
+                            <Input placeholder="price" {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Selector */}
+                    <FormField
+                      control={form.control}
+                      name={`extractions.${index}.selector`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>CSS Selector</FormLabel>
+                          <FormControl>
+                            <Input placeholder=".price" {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Return Value */}
+                    <FormField
+                      control={form.control}
+                      name={`extractions.${index}.returnValue`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Return Value</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="text">Text</SelectItem>
+                              <SelectItem value="html">HTML</SelectItem>
+                              <SelectItem value="attribute">Attribute</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* ✅ Attribute Name (conditional) */}
+                    {returnValue === "attribute" && (
+                      <FormField
+                        control={form.control}
+                        name={`extractions.${index}.attribute`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Attribute Name</FormLabel>
+                            <FormControl>
+                              <Input placeholder="href" {...field} />
+                            </FormControl>
+                          </FormItem>
+                        )}
                       />
-                    </FormControl>
-                    <FormDescription>
-                      JSON payload with static values and dynamic variables from previous steps.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-            <DialogFooter className="mt-4">
+                    )}
+
+                    {/* Skip selectors */}
+                    <FormField
+                      control={form.control}
+                      name={`extractions.${index}.skipSelectors`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Skip Selectors</FormLabel>
+                          <FormControl>
+                            <Input placeholder="img, svg, .icon" {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      onClick={() => remove(index)}
+                    >
+                      Remove Extraction
+                    </Button>
+                  </div>
+                );
+              })}
+            </div>
+
+
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() =>
+                append({
+                  key: "",
+                  selector: "",
+                  returnValue: "text",
+                  skipSelectors: "",
+                  returnArray: true,
+                })
+              }
+            >
+              + Add Extraction
+            </Button>
+
+            <DialogFooter>
               <Button type="submit" className="w-full">
                 Save
               </Button>
