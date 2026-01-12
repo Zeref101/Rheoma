@@ -55,7 +55,7 @@ const coreNodes: NodeTypeOption[] = [
     type: NodeType.HTML_EXTRACTOR,
     label: "HTML Extractor",
     description: "Extract structured data from HTML",
-    icon: "/logos/html.png",
+    icon: "/logos/html.svg",
   },
 ];
 

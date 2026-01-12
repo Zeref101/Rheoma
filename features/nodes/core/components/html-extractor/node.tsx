@@ -72,7 +72,7 @@ export const HtmlExtractorNode = memo((props: NodeProps<HtmlExtractorNodeType>) 
       <BaseExecutionNode
         {...props}
         id={props.id}
-        Icon={"/logos/html.png"}
+        Icon={"/logos/html.svg"}
         name="HTML Extractor"
         description={description}
         onSetting={handleOnSetting}
