@@ -5,7 +5,7 @@ import { BaseExecutionNode } from "../base-execution-node";
 import { splitModes, SplitOutDialog, SplitOutFormValues } from "./dialog";
 import { useNodeStatus } from "../../hooks/use-node-status";
 import { fetchSplitOutRealtimeToken } from "./actions";
-import { SplitOutChannel } from "@/inngest/channels/anthropic copy";
+import { SplitOutChannel } from "@/inngest/channels/split-out";
 
 type SplitOutNodeData = {
   variableName?: string;

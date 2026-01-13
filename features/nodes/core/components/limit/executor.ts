@@ -2,107 +2,58 @@ import type { NodeExecutor } from "@/types/constants";
 import { NonRetriableError } from "inngest";
 import Handlebars from "handlebars";
 import { withNodeStatus } from "./utils/with-node-status";
-import { splitModes } from "./dialog";
-import { SplitOutChannel } from "@/inngest/channels/anthropic copy";
+import { LimitChannel } from "@/inngest/channels/limit";
 
-type SplitOutNodeData = {
+type LimitMode = "first" | "last";
+type LimitNodeData = {
   variableName?: string;
-  fields?: string[];
-  fieldsInput?: string;
+  limit?: number;
   sourceData?: string;
-  mode?: splitModes;
-  keepOtherFields?: boolean;
+  mode?: LimitMode;
 };
 Handlebars.registerHelper("json", (context) => {
   const stringified = JSON.stringify(context, null, 2);
   const safeString = new Handlebars.SafeString(stringified);
   return safeString;
 });
-export const SplitOutExecution: NodeExecutor<SplitOutNodeData> = async ({
+export const LimitExecution: NodeExecutor<LimitNodeData> = async ({
   data,
   nodeId,
   context,
   step,
   publish,
 }) => {
-  return step.run("split-out", () =>
+  return step.run("limit", () =>
     withNodeStatus({
       nodeId,
       publish,
-      channel: SplitOutChannel(),
+      channel: LimitChannel(),
       run: async () => {
-        const { fields, sourceData, mode, keepOtherFields } = data;
+        const { sourceData, mode, limit } = data;
 
         if (!sourceData) {
-          throw new NonRetriableError("Split Out: source data is required");
+          throw new NonRetriableError("Limit: source data is required");
         }
-        if (!(Array.isArray(fields) && fields.length > 0)) {
-          throw new NonRetriableError("Split Out: no fields provided");
+        if (typeof limit !== "number" || limit <= 0) {
+          throw new NonRetriableError("Limit: limit must be a number greater than 0");
         }
 
-        const variableName = data.variableName || "splitData";
-
-        const inputData = Handlebars.compile(sourceData)(context);
-
+        const variableName = data.variableName || "limitData";
         let resolvedInput: unknown;
         try {
-          resolvedInput = JSON.parse(inputData);
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (error) {
-          throw new NonRetriableError("Split Out: source data did not resolve to valid JSON");
+          const compiled = Handlebars.compile(sourceData);
+          const result = compiled(context);
+          resolvedInput = JSON.parse(result);
+        } catch {
+          throw new NonRetriableError("Limit: source data did not resolve to valid JSON");
         }
 
-        const inputObject = Array.isArray(resolvedInput) ? resolvedInput[0] : resolvedInput;
-
-        const output: Record<string, unknown>[] = [];
-        // ? Split logic
-        if (mode === "single") {
-          const field = fields[0];
-          const value = inputObject[field];
-
-          if (!Array.isArray(value)) {
-            throw new NonRetriableError(`Split Out (single): field "${field}" is not an array`);
-          }
-
-          for (const element of value) {
-            const item: Record<string, unknown> = {};
-
-            if (keepOtherFields) {
-              Object.assign(item, inputObject);
-            }
-
-            item[field] = element;
-            output.push(item);
-          }
+        if (!Array.isArray(resolvedInput)) {
+          throw new NonRetriableError("Limit: resolved source data is not an array");
         }
 
-        if (mode === "zip") {
-          const arrays = fields.map((f) => {
-            const v = inputObject[f];
-            if (!Array.isArray(v)) {
-              throw new NonRetriableError(`Split Out (zip): field "${f}" is not an array`);
-            }
-            return v;
-          });
-
-          const maxLength = Math.max(...arrays.map((a) => a.length));
-
-          for (let i = 0; i < maxLength; i++) {
-            const item: Record<string, unknown> = {};
-
-            if (keepOtherFields) {
-              Object.assign(item, inputObject);
-            }
-
-            for (let j = 0; j < fields.length; j++) {
-              if (arrays[j][i] !== undefined) {
-                item[fields[j]] = arrays[j][i];
-              }
-            }
-
-            output.push(item);
-          }
-        }
+        const output =
+          mode === "last" ? resolvedInput.slice(-limit) : resolvedInput.slice(0, limit);
 
         return {
           ...context,

@@ -3,7 +3,7 @@ import { NonRetriableError } from "inngest";
 import Handlebars from "handlebars";
 import { withNodeStatus } from "./utils/with-node-status";
 import { splitModes } from "./dialog";
-import { SplitOutChannel } from "@/inngest/channels/anthropic copy";
+import { SplitOutChannel } from "@/inngest/channels/split-out";
 
 type SplitOutNodeData = {
   variableName?: string;

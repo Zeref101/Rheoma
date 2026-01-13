@@ -1,10 +1,10 @@
-import { SplitOutChannel } from "@/inngest/channels/anthropic copy";
+import { LimitChannel } from "@/inngest/channels/limit";
 import { Realtime } from "@inngest/realtime";
 
 type WithNodeStatusArgs<T> = {
   nodeId: string;
   publish: Realtime.PublishFn;
-  channel: ReturnType<typeof SplitOutChannel>;
+  channel: ReturnType<typeof LimitChannel>;
   run: () => Promise<T>;
 };
 

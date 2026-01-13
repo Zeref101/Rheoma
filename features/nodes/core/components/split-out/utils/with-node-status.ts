@@ -1,4 +1,4 @@
-import { SplitOutChannel } from "@/inngest/channels/anthropic copy";
+import { SplitOutChannel } from "@/inngest/channels/split-out";
 import { Realtime } from "@inngest/realtime";
 
 type WithNodeStatusArgs<T> = {

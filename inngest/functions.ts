@@ -15,6 +15,8 @@ import { slackChannel } from "./channels/slack";
 import { getExecutor } from "@/features/nodes/workflow-engine/executor-registry";
 import { gmailTriggerChannel } from "./channels/gmail-trigger";
 import { HtmlExtractorChannel } from "./channels/html-extractor";
+import { SplitOutChannel } from "./channels/split-out";
+import { LimitChannel } from "./channels/limit";
 
 export const executeWorkflow = inngest.createFunction(
   {
@@ -47,6 +49,8 @@ export const executeWorkflow = inngest.createFunction(
       slackChannel(),
       gmailTriggerChannel(),
       HtmlExtractorChannel(),
+      SplitOutChannel(),
+      LimitChannel(),
     ],
   },
   async ({ event, step, publish }) => {

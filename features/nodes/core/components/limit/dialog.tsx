@@ -31,18 +31,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
-import { Switch } from "@/components/ui/switch";
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (values: z.infer<typeof formSchema>) => void;
-  defaultValues?: Partial<SplitOutFormValues>;
+  defaultValues?: Partial<LimitFormValues>;
 }
 
-export const MODE = ["zip", "single"] as const;
-
-export type splitModes = (typeof MODE)[number];
 const formSchema = z.object({
   variableName: z
     .string()
@@ -51,29 +47,25 @@ const formSchema = z.object({
       message:
         "Variable name must start with a letter or underscore and contain only letters, numbers, and underscores",
     }),
-  fields: z.array(z.string()).min(1),
-  fieldsInput: z.string(),
   sourceData: z
     .string()
     .min(1, {
       message: "Source's variable name is required",
     })
     .nonoptional(),
-  mode: z.enum(["zip", "single"]).default("single").nonoptional(),
-  keepOtherFields: z.boolean().default(true).nonoptional(),
+  limit: z.number().int().default(1).nonoptional(),
+  mode: z.enum(["first", "last"]).default("first").nonoptional(),
 });
-export type SplitOutFormValues = z.infer<typeof formSchema>;
+export type LimitFormValues = z.infer<typeof formSchema>;
 
-export const SplitOutDialog = ({ open, onOpenChange, onSubmit, defaultValues }: Props) => {
-  const form = useForm<SplitOutFormValues>({
+export const LimitDialog = ({ open, onOpenChange, onSubmit, defaultValues }: Props) => {
+  const form = useForm<LimitFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       variableName: defaultValues?.variableName ?? "",
-      fields: defaultValues?.fields ?? [],
-      fieldsInput: (defaultValues?.fields ?? []).join(", "),
       sourceData: defaultValues?.sourceData ?? "",
-      mode: defaultValues?.mode ?? "single",
-      keepOtherFields: defaultValues?.keepOtherFields ?? false,
+      mode: defaultValues?.mode ?? "first",
+      limit: defaultValues?.limit ?? 1,
     },
   });
 
@@ -81,9 +73,9 @@ export const SplitOutDialog = ({ open, onOpenChange, onSubmit, defaultValues }: 
     useWatch({
       control: form.control,
       name: "variableName",
-    }) || "splitData";
+    }) || "limitData";
 
-  const handleSubmit = (values: SplitOutFormValues) => {
+  const handleSubmit = (values: LimitFormValues) => {
     onSubmit(values);
     onOpenChange(false);
   };
@@ -92,11 +84,9 @@ export const SplitOutDialog = ({ open, onOpenChange, onSubmit, defaultValues }: 
     if (open) {
       form.reset({
         variableName: defaultValues?.variableName ?? "",
-        fields: defaultValues?.fields ?? [],
-        fieldsInput: (defaultValues?.fields ?? []).join(", "),
-        mode: defaultValues?.mode ?? "single",
         sourceData: defaultValues?.sourceData ?? "",
-        keepOtherFields: defaultValues?.keepOtherFields ?? false,
+        mode: defaultValues?.mode ?? "first",
+        limit: defaultValues?.limit ?? 1,
       });
     }
   }, [open, defaultValues, form]);
@@ -105,10 +95,8 @@ export const SplitOutDialog = ({ open, onOpenChange, onSubmit, defaultValues }: 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Split Out Configuration</DialogTitle>
-          <DialogDescription>
-            Separates a single data item containing a list into multiple items
-          </DialogDescription>
+          <DialogTitle>Limit Configuration</DialogTitle>
+          <DialogDescription>Restricts the number of items</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -120,7 +108,7 @@ export const SplitOutDialog = ({ open, onOpenChange, onSubmit, defaultValues }: 
                 <FormItem>
                   <FormLabel>Variable Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="splitData" {...field} />
+                    <Input placeholder="limitData" {...field} />
                   </FormControl>
                   <FormDescription>
                     Reference output as <code>{`{{${watchVariableName}}}`}</code>
@@ -136,11 +124,11 @@ export const SplitOutDialog = ({ open, onOpenChange, onSubmit, defaultValues }: 
                 <FormItem>
                   <FormLabel>Source Node Variable</FormLabel>
                   <FormControl>
-                    <Input placeholder="{{json htmlData}}" {...field} />
+                    <Input placeholder="{{json splitData}}" {...field} />
                   </FormControl>
                   <FormDescription>
                     Enter the variable name from a previous node (for example:{" "}
-                    <code>{`{{json htmlData}}`}</code>)
+                    <code>{`{{json splitData}}`}</code>)
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -148,26 +136,22 @@ export const SplitOutDialog = ({ open, onOpenChange, onSubmit, defaultValues }: 
             />
             <FormField
               control={form.control}
-              name="fieldsInput"
+              name="limit"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Fields to Split</FormLabel>
+                  <FormLabel>Max Items</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="title, link, author"
+                      type="number"
+                      min={1}
                       {...field}
-                      onBlur={(e) => {
-                        const parsed = e.target.value
-                          .split(",")
-                          .map((v) => v.trim())
-                          .filter(Boolean);
-
-                        form.setValue("fields", parsed, { shouldValidate: true });
-                      }}
+                      value={field.value}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                     />
                   </FormControl>
                   <FormDescription>
-                    Comma-separated array fields from the input data
+                    If there are more items than this number, some are removed
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -179,7 +163,7 @@ export const SplitOutDialog = ({ open, onOpenChange, onSubmit, defaultValues }: 
               name="mode"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Split Mode</FormLabel>
+                  <FormLabel>Keep</FormLabel>
                   <Select value={field.value} onValueChange={field.onChange}>
                     <FormControl>
                       <SelectTrigger>
@@ -187,35 +171,14 @@ export const SplitOutDialog = ({ open, onOpenChange, onSubmit, defaultValues }: 
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="single">Single (one array, copy others)</SelectItem>
-                      <SelectItem value="zip">Zip (align arrays by index)</SelectItem>
+                      <SelectItem value="first">First Items</SelectItem>
+                      <SelectItem value="last">Last Items</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription>
-                    {field.value === "zip"
-                      ? "Align multiple arrays by index"
-                      : "Split one array and copy remaining fields"}
-                  </FormDescription>
+                  <FormDescription></FormDescription>
                 </FormItem>
               )}
             />
-
-            <FormField
-              control={form.control}
-              name="keepOtherFields"
-              render={({ field }) => (
-                <FormItem className="flex items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-1">
-                    <FormLabel>Keep Other Fields</FormLabel>
-                    <FormDescription>Include non-split fields in each output item</FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
             <DialogFooter>
               <Button type="submit" className="w-full">
                 Save

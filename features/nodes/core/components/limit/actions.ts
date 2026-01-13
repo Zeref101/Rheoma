@@ -1,13 +1,13 @@
 "use server";
 import { getSubscriptionToken, Realtime } from "@inngest/realtime";
 import { inngest } from "@/inngest/client";
-import { SplitOutChannel } from "@/inngest/channels/anthropic copy";
+import { LimitChannel } from "@/inngest/channels/limit";
 
-export type SplitOutToken = Realtime.Token<typeof SplitOutChannel, ["status"]>;
+export type LimitToken = Realtime.Token<typeof LimitChannel, ["status"]>;
 
-export async function fetchSplitOutRealtimeToken(): Promise<SplitOutToken> {
+export async function fetchLimitRealtimeToken(): Promise<LimitToken> {
   const token = await getSubscriptionToken(inngest, {
-    channel: SplitOutChannel(),
+    channel: LimitChannel(),
     topics: ["status"],
   });
   return token;
