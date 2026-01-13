@@ -21,6 +21,7 @@ export const NodeType = {
   EMAIL_TRIGGER: "EMAIL_TRIGGER",
   HTML_EXTRACTOR: "HTML_EXTRACTOR",
   SPLIT_OUT: "SPLIT_OUT",
+  LIMIT: "LIMIT",
 } as const;
 
 export type NodeType = (typeof NodeType)[keyof typeof NodeType];

@@ -60,8 +60,14 @@ const coreNodes: NodeTypeOption[] = [
   {
     type: NodeType.SPLIT_OUT,
     label: "Split Out",
-    description: "split a list into multiple items",
+    description: "Turn a list inside item into separate items",
     icon: "/logos/split-out.svg",
+  },
+  {
+    type: NodeType.LIMIT,
+    label: "Limit",
+    description: "Restrict the number of items",
+    icon: "/logos/limit.svg",
   },
 ];
 

@@ -2,45 +2,38 @@
 import { useReactFlow, type Node, type NodeProps } from "@xyflow/react";
 import { memo, useState } from "react";
 import { BaseExecutionNode } from "../base-execution-node";
-import { splitModes, SplitOutDialog, SplitOutFormValues } from "./dialog";
+import { LimitDialog, LimitFormValues } from "./dialog";
 import { useNodeStatus } from "../../hooks/use-node-status";
-import { fetchSplitOutRealtimeToken } from "./actions";
-import { SplitOutChannel } from "@/inngest/channels/split-out";
+import { fetchLimitRealtimeToken } from "./actions";
+import { LimitChannel } from "@/inngest/channels/limit";
 
-type SplitOutNodeData = {
+type LimitMode = "first" | "last";
+type LimitNodeData = {
   variableName?: string;
-  fields?: string[];
-  fieldsInput?: string;
+  limit?: number;
   sourceData?: string;
-  mode?: splitModes;
-  keepOtherFields?: boolean;
+  mode?: LimitMode;
 };
 
-type SplitOutNodeType = Node<SplitOutNodeData>;
+type LimitNodeType = Node<LimitNodeData>;
 
-export const SplitOutNode = memo((props: NodeProps<SplitOutNodeType>) => {
+export const LimitNode = memo((props: NodeProps<LimitNodeType>) => {
   const nodeStatus = useNodeStatus({
     nodeId: props.id,
-    channel: SplitOutChannel().name,
+    channel: LimitChannel().name,
     topic: "status",
-    refreshToken: fetchSplitOutRealtimeToken,
+    refreshToken: fetchLimitRealtimeToken,
   });
   const [dialogOpen, setDialogOpen] = useState(false);
   const nodeData = props.data;
-  const isConfigured = Array.isArray(nodeData?.fields) && nodeData.fields.length > 0;
-
-  const fieldsCount = nodeData?.fields?.length ?? 0;
-
-  const description = isConfigured
-    ? nodeData?.mode === "zip"
-      ? `Split ${fieldsCount} field${fieldsCount > 1 ? "s" : ""} (zip)`
-      : `Split ${fieldsCount} field${fieldsCount > 1 ? "s" : ""}`
+  const description = nodeData.limit
+    ? `Keep ${nodeData.mode ?? "first"} ${nodeData.limit} item${nodeData.limit > 1 ? "s" : ""}`
     : "Not configured";
 
   const { setNodes } = useReactFlow();
 
   const handleOnSetting = () => setDialogOpen(!dialogOpen);
-  const handleSubmit = (values: SplitOutFormValues) => {
+  const handleSubmit = (values: LimitFormValues) => {
     console.log(values);
     setNodes((nodes) =>
       nodes.map((node) => {
@@ -59,7 +52,7 @@ export const SplitOutNode = memo((props: NodeProps<SplitOutNodeType>) => {
   };
   return (
     <>
-      <SplitOutDialog
+      <LimitDialog
         open={dialogOpen}
         onOpenChange={() => setDialogOpen(!dialogOpen)}
         onSubmit={handleSubmit}
@@ -68,8 +61,8 @@ export const SplitOutNode = memo((props: NodeProps<SplitOutNodeType>) => {
       <BaseExecutionNode
         {...props}
         id={props.id}
-        Icon={"/logos/split-out.svg"}
-        name="Split Out"
+        Icon={"/logos/limit.svg"}
+        name="Limit"
         description={description}
         onSetting={handleOnSetting}
         onDoubleClick={handleOnSetting}
@@ -79,4 +72,4 @@ export const SplitOutNode = memo((props: NodeProps<SplitOutNodeType>) => {
   );
 });
 
-SplitOutNode.displayName = "SplitOutNode";
+LimitNode.displayName = "LimitNode";

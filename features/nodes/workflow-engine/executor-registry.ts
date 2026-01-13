@@ -11,6 +11,7 @@ import { discordExecution } from "@/features/nodes/integrations/components/disco
 import { slackExecution } from "@/features/nodes/integrations/components/slack/executor";
 import { htmlExtractorExecution } from "../core/components/html-extractor/executor";
 import { SplitOutExecution } from "../core/components/split-out/executor";
+import { LimitExecution } from "../core/components/limit/executor";
 
 export const executorRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.MANUAL_TRIGGER]: manualTriggerExecution,
@@ -26,6 +27,7 @@ export const executorRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.EMAIL_TRIGGER]: gmailTriggerExecution,
   [NodeType.HTML_EXTRACTOR]: htmlExtractorExecution,
   [NodeType.SPLIT_OUT]: SplitOutExecution,
+  [NodeType.LIMIT]: LimitExecution,
 };
 
 export const getExecutor = (type: NodeType): NodeExecutor => {

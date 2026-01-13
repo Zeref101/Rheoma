@@ -99,6 +99,7 @@ enum NodeType {
   EMAIL_TRIGGER
   HTML_EXTRACTOR
   SPLIT_OUT
+  LIMIT
 }
 
 enum CredentialType {
