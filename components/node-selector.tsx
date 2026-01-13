@@ -57,6 +57,12 @@ const coreNodes: NodeTypeOption[] = [
     description: "Extract structured data from HTML",
     icon: "/logos/html.svg",
   },
+  {
+    type: NodeType.SPLIT_OUT,
+    label: "Split Out",
+    description: "split a list into multiple items",
+    icon: "/logos/split-out.svg",
+  },
 ];
 
 const integrationNodes: NodeTypeOption[] = [

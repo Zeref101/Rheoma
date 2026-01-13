@@ -10,6 +10,7 @@ import { openAiExecution } from "@/features/nodes/integrations/components/openai
 import { discordExecution } from "@/features/nodes/integrations/components/discord/executor";
 import { slackExecution } from "@/features/nodes/integrations/components/slack/executor";
 import { htmlExtractorExecution } from "../core/components/html-extractor/executor";
+import { SplitOutExecution } from "../core/components/split-out/executor";
 
 export const executorRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.MANUAL_TRIGGER]: manualTriggerExecution,
@@ -24,6 +25,7 @@ export const executorRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.SLACK]: slackExecution,
   [NodeType.EMAIL_TRIGGER]: gmailTriggerExecution,
   [NodeType.HTML_EXTRACTOR]: htmlExtractorExecution,
+  [NodeType.SPLIT_OUT]: SplitOutExecution,
 };
 
 export const getExecutor = (type: NodeType): NodeExecutor => {

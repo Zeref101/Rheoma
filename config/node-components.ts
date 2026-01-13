@@ -2,6 +2,7 @@ import { NodeType } from "@/app/generated/prisma/enums";
 import { InitialNode } from "@/components/initial-node";
 import { HtmlExtractorNode } from "@/features/nodes/core/components/html-extractor/node";
 import { HttpRequestNode } from "@/features/nodes/core/components/http-request/node";
+import { SplitOutNode } from "@/features/nodes/core/components/split-out/node";
 import { AnthropicNode } from "@/features/nodes/integrations/components/anthropic/node";
 import { DiscordNode } from "@/features/nodes/integrations/components/discord/node";
 import { GeminiNode } from "@/features/nodes/integrations/components/gemini/node";
@@ -26,6 +27,7 @@ export const nodeComponents = {
   [NodeType.SLACK]: SlackNode,
   [NodeType.EMAIL_TRIGGER]: GmailTriggerNode,
   [NodeType.HTML_EXTRACTOR]: HtmlExtractorNode,
+  [NodeType.SPLIT_OUT]: SplitOutNode,
 } as const satisfies NodeTypes;
 
 export type RegisteredNodeType = keyof typeof nodeComponents;
