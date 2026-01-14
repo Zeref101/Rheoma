@@ -50,13 +50,18 @@ export const htmlExtractorExecution: NodeExecutor<HtmlExtractorNodeData> = async
 
         // ? RESOLVING HTML SOURCE
         const template = Handlebars.compile(data.sourceHtml)(context);
-        let html = decode(template);
 
-        if (typeof html === "string" && html.startsWith('"') && html.endsWith('"')) {
+        let html: string = template;
+
+        if (typeof html === "string" && html.trim().startsWith('"') && html.trim().endsWith('"')) {
           try {
             html = JSON.parse(html);
-          } catch {}
+          } catch (e) {
+            console.error("Failed to JSON.parse HTML:", e);
+          }
         }
+
+        html = decode(html);
 
         // ? PARSING HTML
 
