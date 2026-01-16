@@ -21,7 +21,7 @@ This project focuses on **event-driven background jobs**, **scalable workflow ex
 Before starting, make sure you have one of the following installed:
 
 - **Node.js** (v20+ recommended)
-- **npm** or **pnpm** (pnpm recommended)
+- **pnpm** (pnpm recommended)
 
 ---
 
@@ -31,12 +31,6 @@ Before starting, make sure you have one of the following installed:
 
 ```bash
 pnpm install
-```
-
-> If you prefer npm:
-
-```bash
-npm install
 ```
 
 ---
